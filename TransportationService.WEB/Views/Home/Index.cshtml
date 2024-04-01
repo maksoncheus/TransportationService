@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div style="display:flex; justify-content:center;">
+    <div style="display:grid;
+    justify-content: center;
+    grid-row-gap: 2rem;
+    grid-column-gap:2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        'track calc'
+        'order calc';">
+        <div style="grid-area:order; flex: 1 0 auto;">
+            <h4>Заказать нерудные стройматериалы</h4>
+            <form style="display:grid; grid-row-gap:20px; vertical-align:baseline;">
+                <div class="form-group">
+                    <select>
+                        <option>
+                            Опция 1
+                        </option>
+                        <option>
+                            Опция 2
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn-secondary" value="Заказать" />
+                </div>
+            </form>
+        </div>
+        <div style="grid-area:track; display:flex;">
+            <form class="container-fluid d-flex m-0 p-0 flex-column">
+                <h4>Отследить заказ</h4>
+                <div class="form-group container-fluid d-flex m-0 p-0">
+                    <input class="form-control" type="text" />
+                    <button class="ms-1 btn bg-secondary bg-opacity-10" type="submit"><img src="~/src/images/browse.svg" width="25px" height="25px" /></button>
+                </div>
+                </form>
+        </div>
+        <div style="grid-area:calc; flex: 1 0 auto">
+            <h4>Рассчитать стоимость перевозки</h4>
+            <form style="display:grid; grid-row-gap:20px; vertical-align:baseline;">
+                <div class="form-group">
+                    <input type="text" />
+                </div>
+                <div class="form-group">
+                    <input type="text" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn-secondary" value="Рассчитать" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
