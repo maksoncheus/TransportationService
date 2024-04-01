@@ -18,7 +18,32 @@
 else
 {
     <li class="nav-item">
-        <a class="nav-link bg-secondary text-light" asp-area="Identity" asp-page="/Account/Login">Войти</a>
+        <div class="position-relative">
+                <button type="button" class="nav-link bg-secondary text-light" asp-area="Identity" asp-page="/Account/Login">Войти</button>
+                <div class="form-login bg-secondary bg-opacity-25 p-2 mt-2" style="position:absolute; left:-250%; top:150%;">
+                    <form class="m-0 p-0 container-fluid">
+                        <div class="input-group me-1">
+                            <input type="text"/>
+                        </div>
+                        <div class="input-group me-1">
+                            <input type="text" />
+                        </div>
+                        <div class="container-fluid d-flex flex-column align-items-center">
+                            <div class="input-group">
+                                <button class="btn bg-secondary bg-opacity-25"></button>
+                            </div>
+                            <div class="container-fluid d-flex">
+                                <div class="input-group col-6">
+                                    <button class="btn bg-secondary bg-opacity-25"></button>
+                                </div>
+                                <div class="input-group col-6">
+                                    <button class="btn bg-secondary bg-opacity-25"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        </div>
     </li>
 }
 </ul>
