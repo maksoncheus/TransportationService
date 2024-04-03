@@ -38,9 +38,7 @@
                                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
                             </li>
                             <li class="nav-item">
-                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                                </form>
+                                <a asp-action="LogOut" asp-controller="Account" class="nav-link btn btn-link text-dark">Выйти</a>
                             </li>
                         }
                         else
@@ -48,25 +46,26 @@
                             <li class="nav-item">
                                 <div class="position-relative">
                                     <button type="button" class="nav-link bg-secondary text-light" id="loginButton" asp-area="Identity" asp-page="/Account/Login">Войти</button>
-                                    <div class="form-login bg-secondary bg-opacity-25 p-2 ps-3 pe-3 mt-2" id="loginForm" style="display:none; position:absolute; left:-250%; top:150%;">
-                                        <form class="m-0 p-0 container-fluid">
+                                    <div class="arrow-top-right bg-secondary bg-opacity-25 p-2 ps-3 pe-3 mt-2" id="loginFormDiv" style="display:none; position:absolute; left:-275%; top:160%;">
+                                        <form id="loginForm" class="m-0 p-0 container-fluid">
                                             <h3 class="text-center">
                                                 Вход
                                             </h3>                        <div class="input-group mb-2">
-                                                <input type="tel" placeholder="Номер телефона" />
+                                                <input name="AuthString" type="tel" placeholder="Номер телефона" />
                                             </div>
                                             <div class="input-group mb-2">
-                                                <input type="password" placeholder="Пароль" />
+                                                <input name="Password" type="password" placeholder="Пароль" />
                                             </div>
+                                            <span id="errorLoginSpan" class="text-danger small text-center"></span>
                                             <div class="container">
                                                 <div class="row mb-2">
                                                     <div class="col-12 d-flex justify-content-center align-self-center">
-                                                        <button class="btn bg-secondary bg-opacity-25">Войти</button>
+                                                        <button type="submit" id="authButton" class="btn bg-secondary bg-opacity-25">Войти</button>
                                                     </div>
                                                 </div>
                                                 <div class="row d-flex">
                                                     <div class="col-6 d-flex justify-content-start align-self-start p-0">
-                                                        <a style="font-size:.77rem;">Регистрация</a>
+                                                        <a asp-action="Register" asp-controller="Account" style="font-size:.77rem;">Регистрация</a>
                                                     </div>
                                                     <div class="col-6 d-flex justify-content-end align-self-end p-0">
                                                         <a style="font-size:.77rem;">Забыли пароль?</a>
