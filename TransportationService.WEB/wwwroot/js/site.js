@@ -7,12 +7,19 @@ var authenticateButton;
 var errorLoginSpan;
 var loginFormDiv;
 var loginForm;
+var ResetPasswordLogSpan;
+var resetPasswordForm;
+var resetPasswordButton;
 $(document).ready(() => {
     loginBtn = $('#loginButton');
     authenticateButton = $('#authButton');
     errorLoginSpan = $('#errorLoginSpan');
     loginFormDiv = $('#loginFormDiv');
     loginForm = $('#loginForm')
+    resetPasswordForm = $('#resetPasswordForm');
+    ResetPasswordLogSpan = $('#resetPasswordLogSpan');
+    resetPasswordButton = $('#resetPasswordButton');
+    resetPasswordButton.on('click', tryFindUser)
     loginForm.on('submit', tryAuthenticate);
     loginBtn.on('click', showLoginForm);
 });
@@ -38,6 +45,21 @@ function tryAuthenticate(e) {
         },
         error: function (xhr) {
             errorLoginSpan.append("<p>" + xhr.responseText + "</p>")
+        }
+    });
+}
+function tryFindUser(e) {
+    e.preventDefault();
+    ResetPasswordLogSpan.empty();
+    $.ajax({
+        type: "get",
+        url: "/Account/FindSuggestedUser",
+        data: resetPasswordForm.serialize(),
+        success: function () {
+            resetPasswordForm.submit();
+        },
+        error: function (xhr) {
+            ResetPasswordLogSpan.append("<p>" + xhr.responseText + "</p>")
         }
     });
 }

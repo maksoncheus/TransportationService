@@ -8,6 +8,8 @@ using TransportationService.WEB.Data.Entities;
 using TransportationService.WEB.Models;
 using TransportationService.WEB.Services;
 using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransportationService.WEB.Controllers
 {
@@ -51,8 +53,6 @@ namespace TransportationService.WEB.Controllers
                     await _userManager.AddToRoleAsync(user, "User");
                     string confirmLink = await GenerateEmailConfirmationLink(user);
                     _mailService.SendConfirmationLink(confirmLink, user.Email);
-                    //await _context.Students.AddAsync(_student);
-                    //await _context.SaveChangesAsync();
                     string message = "Вы успешно зарегистрировались! Проверьте почту и подтвердите свой аккаунт";
                     return RedirectToAction("Message", "Home", new { msg = message });
                 }
@@ -95,7 +95,7 @@ namespace TransportationService.WEB.Controllers
             }
             catch
             {
-                return BadRequest("Что-то пошло не так.");
+                return BadRequest("Что-то пошло не так");
             }
         }
         [HttpGet]
@@ -137,6 +137,91 @@ namespace TransportationService.WEB.Controllers
               protocol: HttpContext.Request.Scheme);
             if (confirmationLink == null) throw new ArgumentNullException(nameof(confirmationLink));
             return confirmationLink;
+        }
+        [HttpGet]
+        public IActionResult GetResetPasswordLink()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetResetPasswordLink(string? authString)
+        {
+            if(authString == null) return Forbid();
+            User? user = await _userManager.FindByEmailAsync(authString);
+            if (user == null)
+                user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == authString);
+            if (user == null)
+                return NotFound();
+            string link = await GenerateResetPasswordLink(user);
+            _mailService.SendResetLink(link, user.Email);
+            string message = "На вашу почту было отправлено письмо с ссылкой для сброса пароля. \n" +
+                "Не забудьте активировать аккаунт, если этого ещё не сделали";
+            return RedirectToAction("Message", "Home", new {msg = message });
+        }
+        private async Task<string> GenerateResetPasswordLink(User user)
+        {
+            string resetToken = await _userManager
+                 .GeneratePasswordResetTokenAsync(user);
+
+            string? confirmationLink = Url.Action("ResetPassword",
+              "Account", new
+              {
+                  userid = user.Id,
+                  token = resetToken
+              },
+              protocol: HttpContext.Request.Scheme);
+            if (confirmationLink == null) throw new ArgumentNullException(nameof(confirmationLink));
+            return confirmationLink;
+        }
+        [HttpGet]
+        public async Task<IActionResult> FindSuggestedUser(string? authString)
+        {
+            if (authString == null)
+                return BadRequest("Укажите почту!");
+            User? user = await _userManager.FindByEmailAsync(authString);
+            if (user == null)
+                user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == authString);
+            if (user == null)
+                return BadRequest("Такого пользователя не найдено");
+            return Ok();
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(string userId, string token)
+        {
+            User? user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                ResetPasswordViewModel vm = new() { Id = userId, Token = token };
+                return View(vm);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
+        {
+            User? user = await _userManager.FindByIdAsync(vm.Id);
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, vm.Token, vm.Password);
+                if (result.Succeeded)
+                {
+                    string message = "Вы успешно изменили пароль своей учетной записи." +
+                        " Теперь вы можете авторизоваться, используя новые данные";
+                    return RedirectToAction("Message", "Home", new {msg = message});
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                return View(vm);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

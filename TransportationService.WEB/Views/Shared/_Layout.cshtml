@@ -3,7 +3,7 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="~/TransportationService.WEB.styles.css" asp-append-version="true" />
 </head>
 @* background-image:linear-gradient(79.8deg,#151515 12.76%,#1b1b1c 40.99%,#262729 94.64%) color:aliceblue; *@
-<body style="overflow: auto;">
+<body class="d-flex flex-column min-vh-100 m-0">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -68,7 +68,7 @@
                                                         <a asp-action="Register" asp-controller="Account" style="font-size:.77rem;">Регистрация</a>
                                                     </div>
                                                     <div class="col-6 d-flex justify-content-end align-self-end p-0">
-                                                        <a style="font-size:.77rem;">Забыли пароль?</a>
+                                                        <a asp-action="GetResetPasswordLink" asp-controller="Account" style="font-size:.77rem;">Забыли пароль?</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,13 +83,13 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid p-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-auto">
         <div class="container">
             &copy; 2024 - TransportationService.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

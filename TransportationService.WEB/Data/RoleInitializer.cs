@@ -7,11 +7,11 @@ namespace TransportationService.WEB.Data
     {
         public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            try
-            {
-                await userManager.DeleteAsync(await userManager.FindByEmailAsync("maksoncheus@gmail.com"));
-            }
-            finally { }
+            //try
+            //{
+            //    await userManager.DeleteAsync(await userManager.FindByEmailAsync("maksoncheus@gmail.com"));
+            //}
+            //finally { }
             string adminEmail = "alinaFedchenkooO@gmail.com";
             string password = "!@_Aa123456";
             if (await roleManager.FindByNameAsync("Administrator") == null)
