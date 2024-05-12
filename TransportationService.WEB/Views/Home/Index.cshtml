@@ -10,12 +10,12 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-        'track calc'
-        'order calc';">
+        'order calc'
+        'track track';">
         <div style="grid-area:order; flex: 1 0 auto;">
             <h4>Заказать нерудные стройматериалы</h4>
-            <form style="display:grid; grid-row-gap:20px; vertical-align:baseline;">
-                <div class="form-group">
+            <form style="display:grid; row-gap:20px; vertical-align:baseline;">
+                <div class="form-group home_input">
                     <select>
                         <option>
                             Опция 1
@@ -25,31 +25,32 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <input type="submit" class="btn-secondary" value="Заказать" />
+                <div class="form-group home_input"></div>
+                <div class="form-group ">
+                    <input type="submit" class="btn main_accent text-light" value="Заказать" />
                 </div>
             </form>
         </div>
         <div style="grid-area:track; display:flex;">
             <form class="container-fluid d-flex m-0 p-0 flex-column">
-                <h4>Отследить заказ</h4>
+                <h4>Уже есть заказ? Найдите его по уникальному номеру:</h4>
                 <div class="form-group container-fluid d-flex m-0 p-0">
                     <input class="form-control" type="text" />
-                    <button class="ms-1 btn bg-secondary bg-opacity-10" type="submit"><img src="~/src/images/browse.svg" width="25px" height="25px" /></button>
+                    <button class="ms-1 btn main_accent bg-opacity-75" type="submit"><img src="~/src/images/browse.svg" width="25px" height="25px" /></button>
                 </div>
                 </form>
         </div>
         <div style="grid-area:calc; flex: 1 0 auto">
             <h4>Рассчитать стоимость перевозки</h4>
-            <form style="display:grid; grid-row-gap:20px; vertical-align:baseline;">
-                <div class="form-group">
-                    <input type="text" />
+            <form style="display:grid; row-gap:20px; vertical-align:baseline;">
+                <div class="form-group home_input">
+                    <input type="text" placeholder="Откуда"/>
+                </div>
+                <div class="form-group home_input">
+                    <input type="text" placeholder="Куда"/>
                 </div>
                 <div class="form-group">
-                    <input type="text" />
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btn-secondary" value="Рассчитать" />
+                    <input type="submit" class="btn main_accent text-light" value="Рассчитать" />
                 </div>
 
             </form>

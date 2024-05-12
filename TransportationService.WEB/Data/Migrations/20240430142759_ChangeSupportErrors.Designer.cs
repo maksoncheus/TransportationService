@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransportationService.WEB.Data;
 using TransportationService.WEB.Data.Entities;
@@ -12,16 +13,15 @@ using TransportationService.WEB.Data.Entities;
 namespace TransportationService.WEB.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext<User>))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240430142759_ChangeSupportErrors")]
+    partial class ChangeSupportErrors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -169,9 +169,6 @@ namespace TransportationService.WEB.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
                     b.Property<double>("RemainQuantity")
                         .HasColumnType("float");
 
@@ -188,9 +185,6 @@ namespace TransportationService.WEB.Data.Migrations
                     b.Property<Guid>("CargoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("DeliveryAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -198,11 +192,11 @@ namespace TransportationService.WEB.Data.Migrations
                     b.Property<DateTime>("DeliveryDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
@@ -211,7 +205,7 @@ namespace TransportationService.WEB.Data.Migrations
 
                     b.HasIndex("CargoId");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("CargoOrders");
                 });
@@ -256,9 +250,6 @@ namespace TransportationService.WEB.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("Length")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<int>("Status")
@@ -411,22 +402,27 @@ namespace TransportationService.WEB.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TransportationService.WEB.Data.Entities.User", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
+                    b.HasOne("TransportationService.WEB.Data.Entities.User", null)
+                        .WithMany("CargoOrders")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Cargo");
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("TransportationService.WEB.Data.Entities.TransportOrder", b =>
                 {
                     b.HasOne("TransportationService.WEB.Data.Entities.User", "Customer")
-                        .WithMany()
+                        .WithMany("TransportOrders")
                         .HasForeignKey("CustomerId");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("TransportationService.WEB.Data.Entities.User", b =>
+                {
+                    b.Navigation("CargoOrders");
+
+                    b.Navigation("TransportOrders");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,100 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TransportationService.WEB.Data
+@using TransportationService.WEB.Data.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject TransportationService.WEB.Data.ApplicationDbContext<User> context
+@{
+    ViewData["Title"] = "Услуги";
+    bool userCanEdit = SignInManager.IsSignedIn(User) && (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator") || await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Manager"));
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9 mx-auto text-start">
+            <p class="lead fw-bold secondary_accent_text">Наша компания предоставляет услуги по доставке и перевозке грузов</p>
+            <p class="lead pt-1 secondary_accent_text">Список наших услуг:</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="d-flex flex-column col-lg-9 mx-auto text-break">
+            <h1>Перевозка</h1>
+            <p class="lead mb-0 secondary_accent_text">Поможем перевести любой груз из одной точки в другую, просто укажите места назначения и некоторые параметры</p>
+            <p class="align-self-end"><a class="btn main_accent text-light align-self-baseline">Перейти к оформлению</a></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            <h1 class="">Доставка</h1>
+            <p class="lead mb-0 secondary_accent_text">Доставим стройматериалы из списка ниже с собственных складов к указанному времени</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="d-flex py-2 col-lg-9 mx-auto">
+            <h4 class="flex-grow-1 fw-bolder">Стройматериалы</h4>
+            @if (userCanEdit)
+            {
+                <a asp-controller="Service" asp-action="Add" asp-area="Manage" class="btn main_accent text-light align-self-baseline">Добавить</a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            @foreach (Cargo cargo in context.Cargos)
+            {
+                <div class="container bg-secondary bg-opacity-10 rounded-3 p-4 my-2">
+                    @if (userCanEdit)
+                    {
+                        <div class="row">
+                            <div class="col d-flex flex-wrap justify-content-end">
+                                <div>
+                                    <a asp-area="Manage" asp-controller="Service" asp-action="Edit" asp-route-id="@cargo.Id" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/edit.svg" width="25px" height="25px" /></a>
+                                </div>
+                                <div>
+                                    <form asp-area="Manage" asp-controller="Service" asp-action="Delete" asp-route-id="@cargo.Id" method="post" onsubmit="return confirm('Вы уверены что хотите удалить товар?');">
+                                        <button class="ms-1 btn bg-danger bg-opacity-75" type="submit"><img src="~/src/images/trash.svg" width="25px" height="25px" /></button>
+                                    </form>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    }
+                    
+                    <div class="row">
+                        <div class="col text-break">
+                            <h6>@cargo.Name</h6>
+                        </div>
+                    </div>
+                    <div class="row mt-2 px-2 flex-wrap">
+                        <span class="col">
+                            <div class="p-0 m-0 d-flex row row-cols-1">
+                                <div class="col p-0 m-0">Цена за тонну</div>
+                                <div class="col p-0 m-0">@cargo.Price</div>
+                            </div>
+                        </span>
+                        <span class="col flex-grow-1">
+                            <div class="p-0 m-0 d-flex row row-cols-1">
+                                <div class="col p-0 m-0">Остаток на складе (в тоннах)</div>
+                                <div class="col p-0 m-0">@cargo.RemainQuantity</div>
+                            </div>
+                        </span>
+                        <div class="col text-end">
+                            @{
+                                string activeClass = true ? "disabled" : "";
+                            }
+                            <a class="ms-1 btn main_accent bg-opacity-75 @activeClass"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="row mt-4 pt-4">
+        <div class="col-lg-9 mx-auto">
+            <h2>Остались вопросы? Обратитесь по телефону <a class="link_secondary" href="tel:@AppConstValues.CompanyPhoneNumber">@AppConstValues.CompanyPhoneNumber</a></h2>
+        </div>
+    </div>
+</div>

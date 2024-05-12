@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using TransportationService.WEB.Data
 @using TransportationService.WEB.Data.Entities
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
@@ -15,9 +16,14 @@
 @* background-image:linear-gradient(79.8deg,#151515 12.76%,#1b1b1c 40.99%,#262729 94.64%) color:aliceblue; *@
 <body class="d-flex flex-column min-vh-100 m-0">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
             <div class="container-fluid">
-                <a asp-area="" asp-controller="Home" asp-action="Index"><img alt="logo" height="75px" width="75px" src="~/src/images/logo.svg"/></a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand main_accent_text">
+                    <img alt="logo" height="75px" width="75px" src="~/src/images/logo.svg">
+                    <span class="ms-3">
+                        @AppConstValues.CompanyName
+                    </span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -25,50 +31,55 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Услуги</a>
+                            <a class="nav-link secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Service">Услуги</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Поддержка</a>
+                            <a class="nav-link secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Support">Поддержка</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-action="LogOut" asp-controller="Account" class="nav-link btn btn-link text-dark">Выйти</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link link_secondary dropdown-toggle" href="#" id="profileDropDownLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Профиль
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="profileDropDownLink">
+                                    <li><a asp-area="Profile" asp-controller="Manage" asp-action="Main" class="dropdown-item">Личные данные</a></li>
+                                    <li><a class="dropdown-item" href="#">Мои заказы</a></li>
+                                    <li><a asp-area="" asp-action="LogOut" asp-controller="Account" class="dropdown-item">Выйти</a></li>
+                                </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
                                 <div class="position-relative">
-                                    <button type="button" class="nav-link bg-secondary text-light" id="loginButton" asp-area="Identity" asp-page="/Account/Login">Войти</button>
-                                    <div class="arrow-top-right bg-secondary bg-opacity-25 p-2 ps-3 pe-3 mt-2" id="loginFormDiv" style="display:none; position:absolute; left:-275%; top:160%;">
-                                        <form id="loginForm" class="m-0 p-0 container-fluid">
+                                    <button type="button" class="btn nav-link secondary_accent text-light" id="loginButton">Войти</button>
+                                    <div class="login-form bg-secondary p-2 ps-3 pe-3 mt-3" id="loginFormDiv">
+                                        <form id="loginForm" class="m-0 p-0 container-fluid justify-content-center">
                                             <h3 class="text-center">
                                                 Вход
-                                            </h3>                        <div class="input-group mb-2">
-                                                <input name="AuthString" type="tel" placeholder="Номер телефона" />
+                                            </h3>
+                                            <div class="input-group justify-content-center mb-2">
+                                                <input name="AuthString" type="tel" placeholder="Почта/Номер телефона" />
                                             </div>
-                                            <div class="input-group mb-2">
+                                            <div class="input-group justify-content-center mb-2">
                                                 <input name="Password" type="password" placeholder="Пароль" />
                                             </div>
-                                            <span id="errorLoginSpan" class="text-danger small text-center"></span>
+                                            <span id="errorLoginSpan" class="text-error small text-center"></span>
                                             <div class="container">
                                                 <div class="row mb-2">
                                                     <div class="col-12 d-flex justify-content-center align-self-center">
-                                                        <button type="submit" id="authButton" class="btn bg-secondary bg-opacity-25">Войти</button>
+                                                        <button type="submit" id="authButton" class="btn attention">Войти</button>
                                                     </div>
                                                 </div>
                                                 <div class="row d-flex">
                                                     <div class="col-6 d-flex justify-content-start align-self-start p-0">
-                                                        <a asp-action="Register" asp-controller="Account" style="font-size:.77rem;">Регистрация</a>
+                                                        <a class="link_secondary" asp-area="" asp-action="Register" asp-controller="Account" style="font-size:.77rem;">Регистрация</a>
                                                     </div>
                                                     <div class="col-6 d-flex justify-content-end align-self-end p-0">
-                                                        <a asp-action="GetResetPasswordLink" asp-controller="Account" style="font-size:.77rem;">Забыли пароль?</a>
+                                                        <a class="link_secondary" asp-area="" asp-action="GetResetPasswordLink" asp-controller="Account" style="font-size:.77rem;">Забыли пароль?</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,20 +89,29 @@
                             </li>
                         }
                     </ul>
-                    
+
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container-fluid p-4">
+    <div class="container-fluid px-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted mt-auto">
-        <div class="container">
-            &copy; 2024 - TransportationService.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top bg-secondary bg-opacity-25 footer text-muted mt-auto">
+        <div class="container px-3 py-2 d-flex align-items-start justify-content-evenly">
+            <div class="row w-100">
+                <div class="container mx-2 d-flex flex-column col text-wrap flex-grow-1">
+                    <p>Телефон: <a class="link_secondary" href="tel:@AppConstValues.CompanyPhoneNumber">@AppConstValues.CompanyPhoneNumber</a></p>
+                    <p>Эл. почта: <a class="link_secondary" href="mailto:@AppConstValues.CompanyEmail">@AppConstValues.CompanyEmail</a></p>
+                    <p>Адрес: @AppConstValues.CompanyAddress</p>
+                </div>
+                <div class="col">
+                    <p><a class="nav-link link_secondary" asp-area="" asp-controller="Home" asp-action="Index">Прайс-лист</a></p>
+                    <p><a class="nav-link link_secondary" asp-area="" asp-controller="Home" asp-action="Support">Поддержка</a></p>
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

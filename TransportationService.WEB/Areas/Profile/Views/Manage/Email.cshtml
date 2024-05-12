@@ -1,0 +1,47 @@
+﻿@model TransportationService.WEB.Areas.Profile.Models.EmailViewModel
+@using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Manage.Internal
+@using TransportationService.WEB.Data
+@{
+    ViewData["Title"] = "Электронная почта";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h3>@ViewData["Title"]</h3>
+<div class="row">
+    <div>
+        <form asp-action="Email">
+            <div asp-validation-summary="All" class="text-error"></div>
+            <div class="main_accent_text">
+                @if (ViewData[@AppConstValues.SuccessString] != null)
+                {
+                    <p>@ViewData[@AppConstValues.SuccessString]</p>
+                }
+            </div>
+            <div class="text-error">
+                @if (ViewData[@AppConstValues.ErrorString] != null)
+                {
+                    <p>@ViewData[@AppConstValues.ErrorString]</p>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="OldEmail" class="control-label"></label>
+                <input asp-for="OldEmail" class="form-control" disabled/>
+                <span asp-validation-for="OldEmail" class="text-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEmail" class="control-label"></label>
+                <input asp-for="NewEmail" class="form-control" />
+                <span asp-validation-for="NewEmail" class="text-error"></span>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                
+                <label asp-for="IsEmailConfirmed" class="form-check-label secondary_accent_text">@(Model.IsEmailConfirmed ? "Почта подтверждена": "Почта не подтверждена")</label>
+                <input asp-for="IsEmailConfirmed" class="form-check ms-2" disabled/>
+                <span asp-validation-for="IsEmailConfirmed" class="text-error"></span>
+            </div>
+            <div class="form-group mt-4 d-flex bg-opacity-100 justify-content-center">
+                <input type="submit" value="Сохранить" class="w-50 btn main_accent text-white" />
+            </div>
+        </form>
+    </div>
+</div>

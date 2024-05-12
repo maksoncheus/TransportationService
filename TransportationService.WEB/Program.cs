@@ -16,7 +16,7 @@ namespace TransportationService.WEB
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext<User>>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseLazyLoadingProxies().UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
@@ -35,6 +35,7 @@ namespace TransportationService.WEB
             .Get<SMTPSettings>();
             builder.Services.AddSingleton<SMTPSettings>(emailConfig);
             builder.Services.AddSingleton<MailService>();
+            builder.Services.AddTransient<LinkService>();
 
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
@@ -73,6 +74,10 @@ namespace TransportationService.WEB
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "areaRoute",
+                pattern: "{area:exists}/{controller}/{action}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

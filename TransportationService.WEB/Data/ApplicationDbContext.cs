@@ -11,6 +11,7 @@ namespace TransportationService.WEB.Data
         public DbSet<Cargo> Cargos { get; set; }
         public DbSet<TransportOrder> TransportOrders { get; set; }
         public DbSet<CargoOrder> CargoOrders { get; set; }
+        public DbSet<SupportFAQ> SupportFAQ { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext<User>> options)
             : base(options)
         {

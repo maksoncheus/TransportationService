@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TransportationService.WEB.Data.Entities
@@ -11,7 +12,5 @@ namespace TransportationService.WEB.Data.Entities
         public string? Patronymic { get; set; }
         [Display(Name = "Фамилия")]
         public string? LastName { get; set; }
-        public virtual ICollection<TransportOrder> TransportOrders { get; set; }
-        public virtual ICollection<CargoOrder> CargoOrders { get; set; }
     }
 }

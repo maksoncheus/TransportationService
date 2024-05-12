@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TransportationService.WEB.Data
+@using TransportationService.WEB.Data.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject TransportationService.WEB.Data.ApplicationDbContext<User> context
+@{
+    ViewData["Title"] = "F.A.Q.";
+    bool userCanEdit = SignInManager.IsSignedIn(User) && (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator") || await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Manager"));
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex col-lg-9 mx-auto">
+            <h1 class="flex-grow-1">@ViewData["Title"]</h1>
+            @if (userCanEdit)
+            {
+                <a asp-controller="FAQ" asp-action="Add" asp-area="Manage" class="btn main_accent text-light align-self-baseline">Добавить</a>
+            }
+        </div>
+    </div>
+    <div class="row py-5">
+        <div class="col-lg-9 mx-auto text-center">
+            <p class="lead mb-0 secondary_accent_text">Ответы на самые часто задаваемые вопросы</p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            <!-- Accordion -->
+            <div class="accordion shadow" id="accordionExample">
+                @{
+                    List<SupportFAQ> fAQs = context.SupportFAQ.ToList();
+                }
+                @for (int i = 0; i < fAQs.Count(); i++)
+                {
+                    <div class="accordion-item card">
+                        <h2 class="accordion-header" id="heading@(i)">
+                            <button class="accordion-button bg-transparent collapsible-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(i)" aria-expanded="false" aria-controls="collapse@(i)">
+                                @fAQs[i].Question
+                            </button>
+                        </h2>
+                        <div id="collapse@(i)" class="accordion-collapse collapse" aria-labelledby="heading@(i)" data-bs-parent="#accordionExample">
+                            <div class="accordion-body d-flex justify-content-between">
+                                <div class="flex-grow-1">
+                                    @fAQs[i].Answer
+                                </div>
+                                @if (userCanEdit)
+                                {
+                                    <div>
+                                        <a asp-controller="FAQ" asp-area="Manage" asp-action="Edit" asp-route-id="@fAQs[i].Id" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/edit.svg" width="25px" height="25px" /></a>
+                                    </div>
+                                    <div>
+                                        <form asp-action="Delete" asp-controller="FAQ" asp-area="Manage" asp-route-id="@fAQs[i].Id" method="post" onsubmit="return confirm('Вы уверены что хотите удалить ответ на вопрос?');">
+                                            <button class="ms-1 btn bg-danger bg-opacity-75" type="submit"><img src="~/src/images/trash.svg" width="25px" height="25px" /></button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 pt-4">
+        <div class="col-lg-9 mx-auto">
+            <h2>Остались вопросы? Обратитесь по телефону <a class="link_secondary" href="tel:@AppConstValues.CompanyPhoneNumber">@AppConstValues.CompanyPhoneNumber</a></h2>
+        </div>
+    </div>
+</div>

@@ -102,7 +102,7 @@ namespace TransportationService.WEB.Controllers
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new {area=""});
         }
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)

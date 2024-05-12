@@ -2,8 +2,10 @@
 {
     public enum Status
     {
-        Ordered = 0,
-        InWork = 1,
-        Delivered = 2
+        CanceledByCompany = 0,
+        CanceledByUser = 1,
+        Ordered = 2,
+        InWork = 3,
+        Delivered = 4
     }
 }

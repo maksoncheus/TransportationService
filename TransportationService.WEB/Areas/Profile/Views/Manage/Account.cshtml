@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Manage.Internal;
+@using TransportationService.WEB.Data
+@{
+    ViewData["Title"] = "Профиль";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+<h3>@ViewData["Title"]</h3>
+<div class="text-wrap text-break">
+    <p class="secondary_accent_text">Ваш аккаунт содержит персональные данные, которые вы предоставили при регистрации. На данной странице вы можете сохранить (в виде файла) или удалить эти данные.</p>
+    <p class="fw-bolder secondary_accent_text">Удаление этих данных НАВСЕГДА удалит ваш профиль на сайте.</p>
+</div>
+<div class="d-flex flex-row justify-content-between">
+    <a asp-action="DownloadData" class="btn main_accent bg-opacity-100">Сохранить</a>
+    <a asp-action="RemoveProfile" class="btn error" bg-opacity-100>Удалить</a>
+</div>

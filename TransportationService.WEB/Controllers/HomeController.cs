@@ -17,8 +17,11 @@ namespace TransportationService.WEB.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult Service()
+        {
+            return View();
+        }
+        public IActionResult Support()
         {
             return View();
         }

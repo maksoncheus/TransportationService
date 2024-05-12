@@ -1,0 +1,7 @@
+﻿@using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Manage.Internal
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a asp-action="Main" class="nav-link @ManageNavPages.IndexNavClass(ViewContext) link_secondary" id="profile"  aria-current="@ManageNavPages.IndexAriaCurrent(ViewContext)">Основная информация</a></li>
+    <li class="nav-item"><a asp-action="Email" class="nav-link @ManageNavPages.EmailNavClass(ViewContext) link_secondary" id="email" aria-current="@ManageNavPages.EmailAriaCurrent(ViewContext)">Эл. почта</a></li>
+    <li class="nav-item"><a asp-action="Password" class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext) link_secondary" id="change-password" aria-current="@ManageNavPages.ChangePasswordAriaCurrent(ViewContext)">Пароль</a></li>
+    <li class="nav-item"><a asp-action="Account" class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext) link_secondary" id="personal-data" aria-current="@ManageNavPages.PersonalDataAriaCurrent(ViewContext)">Профиль</a></li>
+</ul>
