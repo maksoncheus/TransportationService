@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TransportationService.WEB.Configuration;
 using TransportationService.WEB.Data;
 using TransportationService.WEB.Data.Entities;
+using TransportationService.WEB.Models;
 using TransportationService.WEB.Services;
 
 namespace TransportationService.WEB
@@ -18,15 +19,12 @@ namespace TransportationService.WEB
             builder.Services.AddDbContext<ApplicationDbContext<User>>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddTransient<IPasswordValidator<User>,
+            CustomPasswordValidator>(serv => new CustomPasswordValidator());
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 8;
             }).AddEntityFrameworkStores<ApplicationDbContext<User>>()
             .AddDefaultTokenProviders();
 

@@ -5,7 +5,8 @@
         CanceledByCompany = 0,
         CanceledByUser = 1,
         Ordered = 2,
-        InWork = 3,
-        Delivered = 4
+        Accepted = 3,
+        InWork = 4,
+        Delivered = 5
     }
 }

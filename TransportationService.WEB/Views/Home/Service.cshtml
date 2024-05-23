@@ -83,9 +83,9 @@
                         </span>
                         <div class="col text-end">
                             @{
-                                string activeClass = true ? "disabled" : "";
+                                string activeClass = cargo.RemainQuantity == 0 ? "disabled" : "";
                             }
-                            <a class="ms-1 btn main_accent bg-opacity-75 @activeClass"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
+                            <a asp-action="Cargo" asp-controller="Order" asp-area="" asp-route-cargoId="@cargo.Id" class="ms-1 btn main_accent bg-opacity-75 @activeClass"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,7 @@
-﻿@{
+﻿@using TransportationService.WEB.Data
+@using TransportationService.WEB.Data.Entities
+@inject ApplicationDbContext<User> context
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -14,15 +17,13 @@
         'track track';">
         <div style="grid-area:order; flex: 1 0 auto;">
             <h4>Заказать нерудные стройматериалы</h4>
-            <form style="display:grid; row-gap:20px; vertical-align:baseline;">
+            <form style="display:grid; row-gap:20px; vertical-align:baseline;" asp-action="Cargo" asp-controller="Order" asp-area="">
                 <div class="form-group home_input">
-                    <select>
-                        <option>
-                            Опция 1
-                        </option>
-                        <option>
-                            Опция 2
-                        </option>
+                    <select name="cargoId" required>
+                        @foreach(Cargo cargo in context.Cargos)
+                        {
+                            <option value="@cargo.Id">@cargo.Name</option>
+                        }
                     </select>
                 </div>
                 <div class="form-group home_input"></div>

@@ -16,9 +16,9 @@
 @* background-image:linear-gradient(79.8deg,#151515 12.76%,#1b1b1c 40.99%,#262729 94.64%) color:aliceblue; *@
 <body class="d-flex flex-column min-vh-100 m-0">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3 border-bottom border-1 border-light">
             <div class="container-fluid">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand main_accent_text">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand secondary_accent_text">
                     <img alt="logo" height="75px" width="75px" src="~/src/images/logo.svg">
                     <span class="ms-3">
                         @AppConstValues.CompanyName
@@ -31,10 +31,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Service">Услуги</a>
+                            <a class="nav-link link_secondary secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Service">Услуги</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Support">Поддержка</a>
+                            <a class="nav-link link_secondary secondary_accent_text" asp-area="" asp-controller="Home" asp-action="Support">Поддержка</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
@@ -46,7 +46,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="profileDropDownLink">
                                     <li><a asp-area="Profile" asp-controller="Manage" asp-action="Main" class="dropdown-item">Личные данные</a></li>
-                                    <li><a class="dropdown-item" href="#">Мои заказы</a></li>
+                                    <li><a asp-area="Profile" asp-controller="Order" asp-action="All" class="dropdown-item">Мои заказы</a></li>
                                     <li><a asp-area="" asp-action="LogOut" asp-controller="Account" class="dropdown-item">Выйти</a></li>
                                 </ul>
                             </li>

@@ -7,10 +7,10 @@ namespace TransportationService.WEB.Models
     {
         [Required]
         public string Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Укажите новый пароль")]
         [DisplayName("Новый пароль")]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Подтвердите пароль")]
         [Compare(nameof(Password))]
         [DisplayName("Подтвердите пароль")]
         public string ConfirmPassword { get; set; }
