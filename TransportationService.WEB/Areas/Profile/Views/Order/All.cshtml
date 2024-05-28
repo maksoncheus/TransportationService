@@ -26,65 +26,59 @@ else
         <h4 class="text-center">Мои заказы</h4>
         <ul class="nav nav-tabs nav-justified" id="orderTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active link_secondary" id="transport-tab" data-bs-toggle="tab" data-bs-target="#transport" type="button" role="tab" aria-controls="transport" aria-selected="true">Доставка</button>
+                <button class="nav-link active link_secondary" id="transport-tab" data-bs-toggle="tab" data-bs-target="#transport" type="button" role="tab" aria-controls="transport" aria-selected="true">Перевозка</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link link_secondary" id="cargo-tab" data-bs-toggle="tab" data-bs-target="#cargo" type="button" role="tab" aria-controls="cargo" aria-selected="false">Перевозка</button>
+                <button class="nav-link link_secondary" id="cargo-tab" data-bs-toggle="tab" data-bs-target="#cargo" type="button" role="tab" aria-controls="cargo" aria-selected="false">Доставка</button>
             </li>
         </ul>
         <div class="tab-content" id="orderTabContent">
             <!--Перевозка-->
             <div class="tab-pane fade show active" id="transport" role="tabpanel" aria-labelledby="transport-tab">
                 <div class="container bg-secondary bg-opacity-10 p-2">
-
-                    <div class="row">
-                        <article class="card bg-transparent">
-                            <div class="card-body bg-transparent">
-                                <h6>Order ID: OD45345345435</h6>
-                                <article class="card bg-transparent">
-                                    <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Estimated Delivery time:</strong> <br>29 nov 2019 </div>
-                                        <div class="col"> <strong>Status:</strong> <br> Picked by the courier </div>
-                                    </div>
-                                </article>
-                                <div class="track">
-                                    <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order confirmed</span> </div>
-                                    <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Picked by courier</span> </div>
-                                    <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the way </span> </div>
-                                    <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Ready for pickup</span> </div>
-                                </div>
-                            </div>
-                        </article>
-
-                    </div>
-                </div>
-            </div>
-            <!--Доставка-->
-            <div class="tab-pane fade" id="cargo" role="tabpanel" aria-labelledby="cargo-tab">
-                <div class="container bg-secondary bg-opacity-10 p-2">
-                    @foreach (CargoOrder order in context.CargoOrders.Where(o => o.Customer.Id == currentUser.Id).OrderByDescending(o => o.DeliveryDate))
+                    @foreach (TransportOrder order in context.TransportOrders.Where(o => o.Customer.Id == currentUser.Id).OrderByDescending(o => o.DeliveryDate))
                     {
-                            string status = order.Status switch
-                            {
-                                (Status)0 => "Отменен компанией",
-                                (Status)1 => "Отменен пользователем",
-                                (Status)2 => "Получен организацией",
-                                (Status)3 => "Одобрен организацией",
-                                (Status)4 => "В работе",
-                                (Status)5 => "Доставлен",
-                                _ => "Не удалось получить статус"
-                            };
-                    <div class="row">
-                                <article class="card bg-transparent">
-                                    <div class="card-body bg-transparent">
-                                        <h6>Номер заказа: @order.Number</h6>
-                                        <article class="card bg-transparent">
-                                            <div class="card-body row bg-transparent">
-                                                <div class="col"> <strong>Ожидаемое время получения:</strong> <br>@order.DeliveryDate @(order.DeliveryMinTime)-@(order.DeliveryMaxTime)</div>
-                                                <div class="col"> <strong>Статус:</strong> <br> @status </div>
-                                            </div>
-                                        </article>
-                                        <div class="track">
+                        string status = order.Status switch
+                        {
+                            (Status)0 => "Отменен компанией",
+                            (Status)1 => "Отменен пользователем",
+                            (Status)2 => "Получен организацией",
+                            (Status)3 => "Одобрен организацией",
+                            (Status)4 => "В работе",
+                            (Status)5 => "Доставлен",
+                            _ => "Не удалось получить статус"
+                        };
+                        <div class="row">
+                            <article class="card bg-transparent">
+                                <div class="card-body bg-transparent">
+                                    <h6>Номер заказа: @order.Number</h6>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Параметры:</strong> <br>@(order.Length)x@(order.Width)x@(order.Height) м @order.Weight т</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Откуда:</strong> <br>@order.FromAddress</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Куда:</strong> <br>@order.ToAddress</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Цена:</strong> <br>@order.Price</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Ожидаемое время получения:</strong> <br>@order.DeliveryDate @(order.DeliveryMinTime)-@(order.DeliveryMaxTime)</div>
+                                            <div class="col"> <strong>Статус:</strong> <br> @status </div>
+                                        </div>
+                                    </article>
+                                    <div class="track">
                                         @{
                                             int i = 0;
                                         }
@@ -92,11 +86,67 @@ else
                                         <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">Одобрен организацией</span> </div>
                                         <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В пути</span> </div>
                                         <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Доставлен</span> </div>
-                                        </div>
                                     </div>
-                                </article>
-                            </div>
-                            <hr>
+                                </div>
+                            </article>
+                        </div>
+                        <hr>
+                    }
+                </div>
+            </div>
+            <!--Доставка-->
+            <div class="tab-pane fade" id="cargo" role="tabpanel" aria-labelledby="cargo-tab">
+                <div class="container bg-secondary bg-opacity-10 p-2">
+                    @foreach (CargoOrder order in context.CargoOrders.Where(o => o.Customer.Id == currentUser.Id).OrderByDescending(o => o.DeliveryDate))
+                    {
+                        string status = order.Status switch
+                        {
+                            (Status)0 => "Отменен компанией",
+                            (Status)1 => "Отменен пользователем",
+                            (Status)2 => "Получен организацией",
+                            (Status)3 => "Одобрен организацией",
+                            (Status)4 => "В работе",
+                            (Status)5 => "Доставлен",
+                            _ => "Не удалось получить статус"
+                        };
+                        <div class="row">
+                            <article class="card bg-transparent">
+                                <div class="card-body bg-transparent">
+                                    <h6>Номер заказа: @order.Number</h6>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Груз: </strong> <br>@order.Cargo.Name</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Адрес:</strong> <br>@order.DeliveryAddress</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Цена:</strong> <br>@order.Price</div>
+                                        </div>
+                                    </article>
+                                    <article class="card bg-transparent">
+                                        <div class="card-body row bg-transparent">
+                                            <div class="col"> <strong>Ожидаемое время получения:</strong> <br>@order.DeliveryDate @(order.DeliveryMinTime)-@(order.DeliveryMaxTime)</div>
+                                            <div class="col"> <strong>Статус:</strong> <br> @status </div>
+                                        </div>
+                                    </article>
+                                    <div class="track">
+                                        @{
+                                            int i = 0;
+                                        }
+                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Получен организацией</span> </div>
+                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">Одобрен организацией</span> </div>
+                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В пути</span> </div>
+                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Доставлен</span> </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        <hr>
                     }
                 </div>
             </div>

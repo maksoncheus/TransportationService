@@ -12,6 +12,9 @@ using TransportationService.WEB.Services;
 
 namespace TransportationServiceWEB.Areas.Profile.Controllers
 {
+    /// <summary>
+    /// Контроллер "Мой профиль". Содержит методы для изменения данных в профиле пользователя.
+    /// </summary>
     [Area("Profile")]
     public class ManageController : Controller
     {
@@ -26,6 +29,9 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
             _signInManager = signInManager;
             _mailService = mailService;
         }
+        /// <summary>
+        /// Основная страница профиля с личными данными.
+        /// </summary>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Main()
@@ -36,11 +42,14 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
             {
                 FirstName = currentUser.FirstName,
                 LastName = currentUser.LastName,
-                Patronymic = currentUser.Patronymic,
-                PhoneNumber = currentUser.PhoneNumber
+                Patronymic = currentUser.Patronymic
             };
             return View(model);
         }
+        /// <summary>
+        /// Отправка формы на главной странице. Изменение основных данных учетной записи.
+        /// </summary>
+        /// <param name="model">Модель представления</param>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Main(PersonalDataViewModel model)
@@ -50,7 +59,6 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
                 if (!ModelState.IsValid) return View(model);
                 User? currentUser = await _userManager.GetUserAsync(HttpContext.User);
                 if (currentUser == null) return Forbid();
-                currentUser.PhoneNumber = model.PhoneNumber;
                 currentUser.FirstName = model.FirstName;
                 currentUser.LastName = model.LastName;
                 currentUser.Patronymic = model.Patronymic;
@@ -65,8 +73,11 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
                 ViewData[AppConstValues.ErrorString] = ex.Message;
                 return View(model);
             }
-
         }
+        /// <summary>
+        /// Страница "Изменить адрес электронной почты".
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Email()
@@ -80,6 +91,10 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
             };
             return View(model);
         }
+        /// <summary>
+        /// Изменить адрес электронной почты.
+        /// </summary>
+        /// <param name="model">Модель представления.</param>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Email(EmailViewModel model)
@@ -109,11 +124,19 @@ namespace TransportationServiceWEB.Areas.Profile.Controllers
                 return View(model);
             }
         }
+        /// <summary>
+        /// Страница смены пароля.
+        /// </summary>
         [HttpGet]
         public IActionResult Password()
         {
             return View(new PasswordViewModel());
         }
+        /// <summary>
+        /// Сменить пароль.
+        /// </summary>
+        /// <param name="model">Модель представления.</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Password(PasswordViewModel model)
         {

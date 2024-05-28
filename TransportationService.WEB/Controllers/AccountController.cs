@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TransportationService.WEB.Controllers
 {
+    /// <summary>
+    /// Контроллер "Аккаунт". Содержит методы для авторизация, регистрации, выхода из профиля.
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly SignInManager<User> _signInManager;
@@ -26,11 +29,18 @@ namespace TransportationService.WEB.Controllers
             _userManager = userManager;
             _mailService = mailService;
         }
+        /// <summary>
+        /// Получить страницу "Регистрация".
+        /// </summary>
         [HttpGet]
         public IActionResult Register()
         {
             return View(new RegistrationViewModel());
         }
+        /// <summary>
+        /// Отправка формы на странице "Регистрация". Метод регистрирует нового пользователя с указанными данными.
+        /// </summary>
+        /// <param name="vm">Модель представления "<see cref="RegistrationViewModel">Регистрация</see>"</param>
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationViewModel vm)
         {
@@ -53,7 +63,7 @@ namespace TransportationService.WEB.Controllers
                     await _userManager.AddToRoleAsync(user, "User");
                     string confirmLink = await GenerateEmailConfirmationLink(user);
                     _mailService.SendConfirmationLink(confirmLink, user.Email);
-                    string message = "Вы успешно зарегистрировались! Проверьте почту и подтвердите свой аккаунт";
+                    string message = "<h3>Вы успешно зарегистрировались!</h3><br> Проверьте почту и подтвердите свой аккаунт";
                     return RedirectToAction("Message", "Home", new { msg = message });
                 }
                 else
@@ -66,6 +76,11 @@ namespace TransportationService.WEB.Controllers
             }
             return View(vm);
         }
+        /// <summary>
+        /// Метод авторизации.
+        /// </summary>
+        /// <param name="authString">Строка входа (может быть номер телефона или адрес электронной почты.</param>
+        /// <param name="password">Пароль.</param>
         [HttpGet]
         public async Task<IActionResult> Authenticate(string authString, string password)
         {
@@ -98,12 +113,20 @@ namespace TransportationService.WEB.Controllers
                 return BadRequest("Что-то пошло не так");
             }
         }
+        /// <summary>
+        /// Выйти из профиля.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home", new {area=""});
         }
+        /// <summary>
+        /// Метод подтверждения аккаунта через ссылку на электронной почте.
+        /// </summary>
+        /// <param name="userId">ID пользователя.</param>
+        /// <param name="token">Уникальный токен подтверждения.</param>
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -111,18 +134,23 @@ namespace TransportationService.WEB.Controllers
             string message;
             if(user == null)
             {
-                message = "Такой пользователь не был найден. Обратитесь к администратору";
+                message = "<h3>Такой пользователь не был найден. Обратитесь к администратору</h3>";
             }
             else
             {
                 var result = await _userManager.ConfirmEmailAsync(user, token);
                 if (result.Succeeded)
-                    message = "Электронная почта успешно подтверждена. Теперь вы можете авторизоваться на сайте";
+                    message = "<h3>Электронная почта успешно подтверждена. Теперь вы можете авторизоваться на сайте</h3>";
                 else
                     message = string.Join(", ", result.Errors);
             }
             return RedirectToAction("Message", "Home", new { msg = message });
         }
+        /// <summary>
+        /// Сгенерировать строку подтверждения E-mail для указаного пользователя.
+        /// </summary>
+        /// <param name="user">Пользователь, для которого требуется сгенировать ссылку.</param>
+        /// <exception cref="ArgumentNullException">Строка не была сгенерирована.</exception>
         private async Task<string> GenerateEmailConfirmationLink(User user)
         {
             string confirmationToken = await _userManager
@@ -138,11 +166,19 @@ namespace TransportationService.WEB.Controllers
             if (confirmationLink == null) throw new ArgumentNullException(nameof(confirmationLink));
             return confirmationLink;
         }
+        /// <summary>
+        /// Получить страницу "Сброс пароля".
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetResetPasswordLink()
         {
             return View();
         }
+        /// <summary>
+        /// Отправка формы на странице "Сброс пароля".
+        /// </summary>
+        /// <param name="authString">Строка авторизации. Это может быть адрес электронной почты или номер телефона.</param>
         [HttpPost]
         public async Task<IActionResult> GetResetPasswordLink(string? authString)
         {
@@ -154,10 +190,15 @@ namespace TransportationService.WEB.Controllers
                 return NotFound();
             string link = await GenerateResetPasswordLink(user);
             _mailService.SendResetLink(link, user.Email);
-            string message = "На вашу почту было отправлено письмо с ссылкой для сброса пароля. \n" +
+            string message = "<h3>На вашу почту было отправлено письмо с ссылкой для сброса пароля.</h3> <br>" +
                 "Не забудьте активировать аккаунт, если этого ещё не сделали";
             return RedirectToAction("Message", "Home", new {msg = message });
         }
+        /// <summary>
+        /// Сгенерировать ссылку сброса пароля для указанного пользователя.
+        /// </summary>
+        /// <param name="user">Пользователь, для которого требуется сгенерировать ссылку.</param>
+        /// <exception cref="ArgumentNullException">Ссылка не была сгенерирована.</exception>
         private async Task<string> GenerateResetPasswordLink(User user)
         {
             string resetToken = await _userManager
@@ -173,6 +214,10 @@ namespace TransportationService.WEB.Controllers
             if (confirmationLink == null) throw new ArgumentNullException(nameof(confirmationLink));
             return confirmationLink;
         }
+        /// <summary>
+        /// Найти пользователя.
+        /// </summary>
+        /// <param name="authString">Строка авторизации. Это может быть номер телефона или адрес электронной почты.</param>
         [HttpGet]
         public async Task<IActionResult> FindSuggestedUser(string? authString)
         {
@@ -185,6 +230,12 @@ namespace TransportationService.WEB.Controllers
                 return BadRequest("Такого пользователя не найдено");
             return Ok();
         }
+        /// <summary>
+        /// Сбросить пароль.
+        /// </summary>
+        /// <param name="userId">ID пользователя.</param>
+        /// <param name="token">Уникальный токен сброса пароля.</param>
+        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string userId, string token)
@@ -197,7 +248,11 @@ namespace TransportationService.WEB.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-        }
+        } 
+        /// <summary>
+        /// Отправка формы на странице "Сброс пароля".
+        /// </summary>
+        /// <param name="vm">Модель представления "<see cref="ResetPasswordViewModel">Сброс пароля</see>"</param>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
@@ -208,7 +263,7 @@ namespace TransportationService.WEB.Controllers
                 IdentityResult result = await _userManager.ResetPasswordAsync(user, vm.Token, vm.Password);
                 if (result.Succeeded)
                 {
-                    string message = "Вы успешно изменили пароль своей учетной записи." +
+                    string message = "<h3>Вы успешно изменили пароль своей учетной записи.</h3><br>" +
                         " Теперь вы можете авторизоваться, используя новые данные";
                     return RedirectToAction("Message", "Home", new {msg = message});
                 }

@@ -80,7 +80,6 @@ namespace TransportationService.WEB
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            //app.MapRazorPages();
 
             app.Run();
         }

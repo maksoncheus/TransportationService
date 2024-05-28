@@ -1,0 +1,83 @@
+﻿@using TransportationService.WEB.Data
+@using TransportationService.WEB.Data.Entities
+@inject ApplicationDbContext<User> context
+@model TransportationService.WEB.Models.TransportOrderViewModel
+
+@{
+    ViewData["Title"] = "Расчёт и оформление заказа на перевозку";
+    DateOnly dateTemplate = DateOnly.FromDateTime(DateTime.Today);
+    TimeOnly minTimeTemplate = new TimeOnly(8, 0);
+    TimeOnly maxTimeTemplate = new TimeOnly(19, 0);
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        <form asp-action="TransportOrder">
+            <p>Параметры груза</p>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="d-flex flex-row">
+                <div class="form-group me-3">
+                    <label asp-for="Width" class="control-label"></label>
+                    <input asp-for="Width" class="form-control" />
+                    <span asp-validation-for="Width" class="text-danger"></span>
+                </div>
+                <div class="form-group me-3">
+                    <label asp-for="Length" class="control-label"></label>
+                    <input asp-for="Length" class="form-control" />
+                    <span asp-validation-for="Length" class="text-danger"></span>
+                </div>
+                <div class="form-group me-3">
+                    <label asp-for="Height" class="control-label"></label>
+                    <input asp-for="Height" class="form-control" />
+                    <span asp-validation-for="Height" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Weight" class="control-label"></label>
+                <input asp-for="Weight" class="form-control" />
+                <span asp-validation-for="Weight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FromAddress" class="control-label">Откуда</label>
+                <input asp-for="FromAddress" class="form-control" />
+                <span asp-validation-for="FromAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToAddress" class="control-label">Куда</label>
+                <input asp-for="ToAddress" class="form-control" />
+                <span asp-validation-for="ToAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Когда</label>
+                <input type="date" asp-for="DeliveryDate" value="@dateTemplate.ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+            </div>
+            <div class="form-group d-flex mt-2">
+                <input type="time" asp-for="DeliveryMinTime" value="@minTimeTemplate.ToString("HH:mm")" class="form-control me-3" />
+                <p class="fw-bold text-center p-0 m-0 align-self-center"> - </p>
+                <input type="time" asp-for="DeliveryMaxTime" value="@maxTimeTemplate.ToString("HH:mm")" class="form-control ms-3" />
+            </div>
+            <input type="hidden" asp-for="Price" value="@Model.Price" />
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input type="text" disabled value="@Model.Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group text-center mt-2 ">
+                <input type="submit" value="Оформить" class="btn btn-primary main_accent" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

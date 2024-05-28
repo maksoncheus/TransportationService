@@ -5,6 +5,23 @@
     ViewData["Title"] = "Home Page";
 }
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @* <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> *@
+            <div class="modal-body" id="modalOrderBody">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn main_accent" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div style="display:flex; justify-content:center;">
     <div style="display:grid;
     justify-content: center;
@@ -33,33 +50,46 @@
             </form>
         </div>
         <div style="grid-area:track; display:flex;">
-            <form class="container-fluid d-flex m-0 p-0 flex-column">
+            <form class="container-fluid d-flex m-0 p-0 flex-column" id="findOrderForm">
                 <h4>Уже есть заказ? Найдите его по уникальному номеру:</h4>
                 <div class="form-group container-fluid d-flex m-0 p-0">
-                    <input class="form-control" type="text" />
-                    <button class="ms-1 btn main_accent bg-opacity-75" type="submit"><img src="~/src/images/browse.svg" width="25px" height="25px" /></button>
+                    <input class="form-control" type="text" name="orderId" />
+                    <button class="ms-1 btn main_accent bg-opacity-75" id="findOrderButton" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><img src="~/src/images/browse.svg" width="25px" height="25px" /></button>
                 </div>
                 </form>
         </div>
         <div style="grid-area:calc; flex: 1 0 auto">
             <h4>Рассчитать стоимость перевозки</h4>
-            <form style="display:grid; row-gap:20px; vertical-align:baseline;">
+            <form style="display:grid; row-gap:20px; vertical-align:baseline;" asp-action="Transport" asp-controller="Order" asp-area="">
                 <div class="form-group home_input">
-                    <input type="text" placeholder="Откуда"/>
+                    <input type="text" name="fromAddress" placeholder="Откуда"/>
                 </div>
                 <div class="form-group home_input">
-                    <input type="text" placeholder="Куда"/>
+                    <input type="text" name="toAddress" placeholder="Куда"/>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn main_accent text-light" value="Рассчитать" />
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 @section Scripts{
     <script>
-        
+        $('#findOrderButton').on('click', function (e) {
+            e.preventDefault();
+            console.log('oaoaoao');
+            $.ajax({
+                url: '/Order/GetOrder',
+                type: 'post',
+                dataType: 'html',
+                data: $('#findOrderForm').serialize(),
+                success: function (response) {
+                    $('#modalOrderBody').html(response);
+                },
+                error: function (response) {
+                }
+            });
+        });
     </script>
 }

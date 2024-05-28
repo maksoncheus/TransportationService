@@ -25,9 +25,14 @@ namespace TransportationService.WEB.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Message(string msg)
         {
             return View(model: msg);
+        }
+        public IActionResult GetMessage(string msg)
+        {
+            return Content(msg, "text/html");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

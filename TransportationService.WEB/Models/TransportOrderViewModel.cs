@@ -9,16 +9,16 @@ namespace TransportationService.WEB.Models
     {
         [DisplayName("Длина")]
         [Required(ErrorMessage = "Укажите все параметры груза")]
-        public double Length { get; set; }
+        public string Length { get; set; } = null!;
         [Required(ErrorMessage = "Укажите все параметры груза")]
         [DisplayName("Ширина")]
-        public double Width { get; set; }
+        public string Width { get; set; } = null!;
         [DisplayName("Высота")]
         [Required(ErrorMessage = "Укажите все параметры груза")]
-        public double Height { get; set; }
+        public string Height { get; set; } = null!;
         [DisplayName("Вес (в тоннах)")]
         [Required(ErrorMessage = "Укажите массу")]
-        public string Weight { get; set; }
+        public string Weight { get; set; } = null!;
         [DisplayName("Адрес отправки")]
         [Required(ErrorMessage = "Укажите адрес отправки")]
         public string FromAddress { get; set; } = null!;

@@ -4,7 +4,7 @@ html {
     --color-main: 82,79,157;
     --color-second: 166,178,236;
     --color-attention: 64,0,114;
-    --bg-color: 237,238,240;
+    --bg-color: 31,35,38;
     --error-color: 198,81,92;
 }
 
@@ -523,4 +523,7 @@ ul.row, ul.row-sm {
     display: block;
     margin-bottom: 5px;
     color: #212529
+}
+.modal-content{
+    background-color: rgb(var(--bg-color)) !important;
 }

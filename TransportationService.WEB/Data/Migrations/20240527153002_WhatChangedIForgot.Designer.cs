@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransportationService.WEB.Data;
 using TransportationService.WEB.Data.Entities;
@@ -12,9 +13,11 @@ using TransportationService.WEB.Data.Entities;
 namespace TransportationService.WEB.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext<User>))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240527153002_WhatChangedIForgot")]
+    partial class WhatChangedIForgot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

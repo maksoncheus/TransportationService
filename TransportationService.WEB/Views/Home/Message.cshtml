@@ -1,3 +1,6 @@
-﻿@model string;
-<h3 class="ms-3">@Model</h3>
-<a class="nav-link btn btn-link text-dark" asp-action="Index">На главную</a>
+﻿@inject Microsoft.AspNetCore.Mvc.IUrlHelper Url
+@model string;
+<div id="message-container">
+    @Html.Raw( Model )
+</div>
+<a class="nav-link btn btn-link secondary_accent_text" asp-action="Index">На главную</a>

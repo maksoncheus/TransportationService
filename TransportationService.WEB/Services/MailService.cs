@@ -4,6 +4,9 @@ using TransportationService.WEB.Configuration;
 
 namespace TransportationService.WEB.Services
 {
+    /// <summary>
+    /// Сервис для отправки электронной почты.
+    /// </summary>
     public class MailService
     {
         private readonly ILogger<MailService> _logger;
@@ -14,6 +17,11 @@ namespace TransportationService.WEB.Services
             _logger = logger;
             _smtpSettings = smtpSettings;
         }
+        /// <summary>
+        /// Отправить ссылку подтверждения по указанному адресу электронной почты.
+        /// </summary>
+        /// <param name="link">Ссылка подтверждения.</param>
+        /// <param name="emailTo">Адрес электронной почты, на который требуется отправить ссылку.</param>
         public void SendConfirmationLink(string link, string emailTo)
         {
             try
@@ -21,7 +29,9 @@ namespace TransportationService.WEB.Services
                 using (MailMessage mm = new MailMessage(
                     new MailAddress(_smtpSettings.Email, "TransportationService"), new MailAddress(emailTo)))
                 {
+                    //Заголовок сообщения
                     mm.Subject = "Подтверждение почты TransportationService";
+                    //Тело сообщения
                     mm.Body = "Благодарим вас за регистрацию в сервисе TransportationService!"
                         + Environment.NewLine +
                         $"Для подтверждения аккаунта пройдите по ссылке: {link}";
@@ -34,6 +44,11 @@ namespace TransportationService.WEB.Services
                 _logger.Log(LogLevel.Error, ex.Message);
             }
         }
+        /// <summary>
+        /// Отправить ссылку сброса пароля по указанному адресу электронной почты.
+        /// </summary>
+        /// <param name="link">Ссылка сброса пароля.</param>
+        /// <param name="emailTo">Адрес, на который требуется отправить сообщение.</param>
         public void SendResetLink(string link, string emailTo)
         {
             try
@@ -56,7 +71,10 @@ namespace TransportationService.WEB.Services
                 _logger.Log(LogLevel.Error, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Отправить сообщение.
+        /// </summary>
+        /// <param name="mm">Экземпляр класса <see cref="MailMessage"></see>, который нужно отправить</param>
         private void SendMessage(MailMessage mm)
         {
             using (SmtpClient smtp = new SmtpClient())
