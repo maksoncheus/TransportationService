@@ -8,7 +8,7 @@ namespace TransportationService.WEB.Models
     {
         private const int MIN_LENGTH = 8;
         private const int MAX_LENGTH = 30;
-        private const string PATTERN = "^[A-Za-z0-9]+$";
+        private const string PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*-_]).{8,20}$";
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string? password)
         {
             List<IdentityError> errors = new List<IdentityError>();

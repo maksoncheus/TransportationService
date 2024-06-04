@@ -79,7 +79,7 @@ namespace TransportationService.WEB.Controllers
         /// <summary>
         /// Метод авторизации.
         /// </summary>
-        /// <param name="authString">Строка входа (может быть номер телефона или адрес электронной почты.</param>
+        /// <param name="authString">Строка входа (может быть номер телефона или адрес электронной почты).</param>
         /// <param name="password">Пароль.</param>
         [HttpGet]
         public async Task<IActionResult> Authenticate(string authString, string password)
