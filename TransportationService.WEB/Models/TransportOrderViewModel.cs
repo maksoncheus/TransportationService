@@ -16,7 +16,7 @@ namespace TransportationService.WEB.Models
         [DisplayName("Высота")]
         [Required(ErrorMessage = "Укажите все параметры груза")]
         public string Height { get; set; } = null!;
-        [DisplayName("Вес (в тоннах)")]
+        [DisplayName("Вес (в килограммах)")]
         [Required(ErrorMessage = "Укажите массу")]
         public string Weight { get; set; } = null!;
         [DisplayName("Адрес отправки")]
@@ -34,7 +34,8 @@ namespace TransportationService.WEB.Models
         [DisplayName("Время получения - максимум")]
         [Required(ErrorMessage = "Укажите диапазон времени получения груза")]
         public TimeOnly DeliveryMaxTime { get; set; }
+        [Required(ErrorMessage = "Цена не указана")]
         [DisplayName("Итоговая цена")]
-        public double Price { get; set; }
+        public string Price { get; set; }
     }
 }

@@ -54,7 +54,7 @@ else
                                     <h6>Номер заказа: @order.Number</h6>
                                     <article class="card bg-transparent">
                                         <div class="card-body row bg-transparent">
-                                            <div class="col"> <strong>Параметры:</strong> <br>@(order.Length)x@(order.Width)x@(order.Height) м @order.Weight т</div>
+                                            <div class="col"> <strong>Параметры:</strong> <br>@(order.Length)x@(order.Width)x@(order.Height) м @order.Weight кг</div>
                                         </div>
                                     </article>
                                     <article class="card bg-transparent">
@@ -115,16 +115,12 @@ else
                                     <h6>Номер заказа: @order.Number</h6>
                                     <article class="card bg-transparent">
                                         <div class="card-body row bg-transparent">
-                                            <div class="col"> <strong>Груз: </strong> <br>@order.Cargo.Name</div>
+                                            <div class="col"> <strong>Груз: </strong> <br>@order.Cargo.Name | @order.Weight кг</div>
                                         </div>
                                     </article>
                                     <article class="card bg-transparent">
                                         <div class="card-body row bg-transparent">
                                             <div class="col"> <strong>Адрес:</strong> <br>@order.DeliveryAddress</div>
-                                        </div>
-                                    </article>
-                                    <article class="card bg-transparent">
-                                        <div class="card-body row bg-transparent">
                                             <div class="col"> <strong>Цена:</strong> <br>@order.Price</div>
                                         </div>
                                     </article>

@@ -4,11 +4,11 @@
         <div class="container bg-secondary bg-opacity-10 rounded-3 p-4 my-2">
             <div class="row mt-2 px-2 flex-wrap align-items-center">
                 <span class="col">
-                    <div class="col p-0 m-0"><h3>Управление заказами</h3></div>
-                    <div class="col p-0 m-0 text-break">Посмотрите новые заказы, измените статус уже существующих</div>
+                    <div class="col p-0 m-0"><h3>Управление заказами на доставку</h3></div>
+                    <div class="col p-0 m-0 text-break">Посмотрите новые заказы на доставку, измените статус уже существующих</div>
                 </span>
                 <div class="col text-end">
-                    <a asp-action="Cargo" asp-controller="Order" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
+                    <a asp-area="Manage" asp-controller="Order" asp-action="Cargo" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
                 </div>
             </div>
         </div>
@@ -18,25 +18,25 @@
         <div class="container bg-secondary bg-opacity-10 rounded-3 p-4 my-2">
             <div class="row mt-2 px-2 flex-wrap align-items-center">
                 <span class="col">
+                    <div class="col p-0 m-0"><h3>Управление заказами на перевозку</h3></div>
+                    <div class="col p-0 m-0 text-break">Посмотрите новые заказы на перевозку, измените статус уже существующих</div>
+                </span>
+                <div class="col text-end">
+                    <a asp-area="Manage" asp-controller="Order" asp-action="Transport" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="container bg-secondary bg-opacity-10 rounded-3 p-4 my-2">
+            <div class="row mt-2 px-2 flex-wrap align-items-center">
+                <span class="col-md-10">
                     <div class="col p-0 m-0"><h3>Управление пользователями</h3></div>
-                    <div class="col p-0 m-0 text-break">Добавьте, удалите или измените профили существующих пользователей, если информация там нарушает правила</div>
+                    <div class="col p-0 m-0 text-break">Просмотрите профили существующих пользователей. Удалите их, если информация там нарушает правила</div>
                 </span>
-                <div class="col text-end">
-                    <a asp-action="Cargo" asp-controller="Order" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="container bg-secondary bg-opacity-10 rounded-3 p-4 my-2">
-            <div class="row mt-2 px-2 flex-wrap align-items-center">
-                <span class="col">
-                    <div class="col p-0 m-0"><h3>Управление менеджерами</h3></div>
-                    <div class="col p-0 m-0 text-break">Добавьте или удалите менеджеров из числа существующих пользователей</div>
-                </span>
-                <div class="col text-end">
-                    <a asp-action="Cargo" asp-controller="Order" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
+                <div class="col-md-2 text-end">
+                    <a asp-area="Manage" asp-controller="Users" asp-action="Index" class="ms-1 btn main_accent bg-opacity-75"><img src="~/src/images/arrow-right.svg" width="25px" height="25px" /></a>
                 </div>
             </div>
         </div>

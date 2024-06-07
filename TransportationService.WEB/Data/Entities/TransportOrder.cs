@@ -40,5 +40,6 @@ namespace TransportationService.WEB.Data.Entities
 
         [Display(Name = "Номер заказчика")]
         public virtual User Customer { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

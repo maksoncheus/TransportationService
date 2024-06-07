@@ -1,0 +1,134 @@
+﻿@model TransportationService.WEB.Helpers.PaginatedList<TransportationService.WEB.Data.Entities.User>
+@using Microsoft.AspNetCore.Identity
+@using TransportationService.WEB.Data
+@using TransportationService.WEB.Data.Entities
+@inject ApplicationDbContext<User> context
+@inject UserManager<User> userManager
+@{
+    bool isAdmin = await userManager.IsInRoleAsync(await userManager.GetUserAsync(User), "Administrator");
+}
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1 flex-row">
+        <li class="me-2">
+            <a asp-controller="Main" asp-action="Index" class="btn secondary_accent rounded-1">Назад</a>
+        </li>
+    </ul>
+</div>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Найти по почте или номеру телефона: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Поиск" class="btn main_accent" /> |
+            <a class="link_secondary" asp-action="Index">Вернуться к полному списку</a>
+        </p>
+    </div>
+</form>
+<div class="container">
+    <div class="row justify-content-center">
+        @foreach (User user in Model)
+        {
+            <div class="col-md-3 mx-1 my-1 bg-secondary bg-opacity-10 user" data-id="@user.Id">
+                <article class="card bg-transparent">
+                    <div class="card-body bg-transparent">
+                        <h6>Номер телефона: @user.PhoneNumber</h6>
+                        <article class="card bg-transparent">
+                            <div class="card-body row bg-transparent">
+                                <div class="col"> <strong>Электронная почта:</strong> <br>@user.Email <br> <span class="secondary_accent_text">@(user.EmailConfirmed ? "Подтвержден" : "Не подтвержден")</span></div>
+                            </div>
+                        </article>
+                        <article class="card bg-transparent">
+                            <div class="card-body row bg-transparent">
+                                <div class="col"> <strong>Личные данные:</strong> <br>@((user.FirstName == null && user.LastName == null && user.Patronymic == null) ? "Не указано" : $"{user.LastName} {user.FirstName} {user.Patronymic}")</div>
+                            </div>
+                        </article>
+                        <article class="card bg-transparent">
+                            <div class="card-body row bg-transparent">
+                                <div class="col text-break"> <strong>Уровень доступа:</strong> <br> @(await userManager.IsInRoleAsync(user, "Administrator") ? "Администратор" : await userManager.IsInRoleAsync(user, "Manager") ? "Менеджер" : await userManager.IsInRoleAsync(user, "User") ? "Пользователь" : "ОШИБКА")</div>
+                            </div>
+                        </article>
+                        @if (isAdmin)
+                        {
+                            if (await userManager.IsInRoleAsync(user, "Manager"))
+                            {
+                                <article class="card bg-transparent">
+                                    <div class="card-body row bg-transparent justify-content-center">
+                                        <button class="btn main_accent btn-demote">Понизить</button>
+                                    </div>
+                                </article>
+                            }
+                            if (await userManager.IsInRoleAsync(user, "User"))
+                            {
+                                <article class="card bg-transparent">
+                                    <div class="card-body row bg-transparent justify-content-center">
+                                        <button class="btn secondary_accent btn-promote">Повысить</button>
+                                    </div>
+                                </article>
+                            }
+                        }
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+    <div class="row justify-content-center mt-3">
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn secondary_accent col-md-1 mx-1 @prevDisabled">
+            Назад
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn secondary_accent col-md-1 mx-1 @nextDisabled">
+            Далее
+        </a>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $('.btn-promote').on('click', function (e) {
+            let _this = $(this),
+                context = _this.closest('.user')
+                $.ajax({
+                    url: 'Promote',
+                    type: 'post',
+                    data: {
+                        id: context.data('id')
+                    },
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+        });
+
+            $('.btn-demote').on('click', function (e) {
+                let _this = $(this),
+                    context = _this.closest('.user')
+                $.ajax({
+                    url: 'Demote',
+                    type: 'post',
+                    data: {
+                        id: context.data('id')
+                    },
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+            });
+    </script>
+}

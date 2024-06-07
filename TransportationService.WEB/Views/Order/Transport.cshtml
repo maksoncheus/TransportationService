@@ -43,12 +43,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="FromAddress" class="control-label">Откуда</label>
-                <input asp-for="FromAddress" class="form-control" />
+                <input asp-for="FromAddress" class="form-control" readonly="readonly" />
                 <span asp-validation-for="FromAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ToAddress" class="control-label">Куда</label>
-                <input asp-for="ToAddress" class="form-control" />
+                <input asp-for="ToAddress" class="form-control" readonly="readonly" />
                 <span asp-validation-for="ToAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -61,10 +61,9 @@
                 <p class="fw-bold text-center p-0 m-0 align-self-center"> - </p>
                 <input type="time" asp-for="DeliveryMaxTime" value="@maxTimeTemplate.ToString("HH:mm")" class="form-control ms-3" />
             </div>
-            <input type="hidden" asp-for="Price" value="@Model.Price" />
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input type="text" disabled value="@Model.Price" class="form-control" />
+                <input type="text" asp-for="Price" readonly="readonly" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group text-center mt-2 ">
@@ -73,6 +72,145 @@
         </form>
     </div>
     <div class="col-md-4">
+        <div id="container" style="margin: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;"></div>
+        <script src="https://mapgl.2gis.com/api/js/v1"></script>
+        <script src="https://unpkg.com/@@2gis/mapgl-directions@@^2/dist/directions.js"></script>
+        <script>
+            const map = new mapgl.Map('container', {
+                center: [80.283012, 55.194486],
+                zoom: 11,
+                key: '52cb94e5-f021-4f45-93fb-a8f4e57cf048',
+            });
+
+            const directions = new mapgl.Directions(map, {
+                directionsApiKey: '52cb94e5-f021-4f45-93fb-a8f4e57cf048',
+            });
+            const markers = [];
+
+            let firstPoint;
+            let secondPoint;
+            let selecting = 'a';
+            const buttonText = ['Выберите точки на карте', 'Сбросить'];
+
+            const controlsHtml = `<button id="reset" disabled>${buttonText[0]}</button> `;
+            new mapgl.Control(map, controlsHtml, {
+                position: 'topLeft',
+            });
+            const resetButton = document.getElementById('reset');
+
+            resetButton.addEventListener('click', function () {
+                selecting = 'a';
+                firstPoint = undefined;
+                secondPoint = undefined;
+                directions.clear();
+                this.disabled = true;
+                this.textContent = buttonText[0];
+                $('#ToAddress').val(null);
+                $('#FromAddress').val(null);
+                length = null;
+            });
+
+            map.on('click', (e) => {
+                const coords = e.lngLat;
+
+                if (selecting != 'end') {
+                    markers.push(
+                        new mapgl.Marker(map, {
+                            coordinates: coords,
+                            icon: 'https://docs.2gis.com/img/dotMarker.svg',
+                        }),
+                    );
+                }
+
+                if (selecting === 'a') {
+                    firstPoint = coords;
+                    selecting = 'b';
+                    $.ajax({
+                        url: 'https://catalog.api.2gis.ru/3.0/items/geocode',
+                        type: 'get',
+                        data: {
+                            type: 'building',
+                            key: '52cb94e5-f021-4f45-93fb-a8f4e57cf048',
+                            lon: coords[0],
+                            lat: coords[1]
+                        },
+                        success: function (response) {
+                            if (response.meta.code === 404) {
+                                firstPoint = null;
+                                selecting = 'a';
+                                alert('Укажите корректный адрес');
+                                markers[0].destroy();
+                            }
+                            if (firstPoint) {
+                                $('#FromAddress').val(response.result.items[0].full_name);
+                                $('#FromAddress').parent().find('span').empty();
+                                $('#FromAddress').trigger('change');
+                            }
+                        },
+                        error: function (response) {
+                            console.log('error with first');
+                        }
+                    });
+
+                } else if (selecting === 'b') {
+                    secondPoint = coords;
+                    selecting = 'end';
+                    $.ajax({
+                        url: 'https://catalog.api.2gis.ru/3.0/items/geocode',
+                        type: 'get',
+                        data: {
+                            type: 'building',
+                            key: '52cb94e5-f021-4f45-93fb-a8f4e57cf048',
+                            lon: coords[0],
+                            lat: coords[1]
+                        },
+                        success: function (response) {
+                            if (response.meta.code === 404) {
+                                secondPoint = null;
+                                selecting = 'b';
+                                alert('Укажите корректный адрес');
+                                markers[0].destroy();
+                            }
+                            if (firstPoint && secondPoint) {
+                                directions.carRoute({
+                                    points: [firstPoint, secondPoint],
+                                    transport: "truck",
+                                })
+
+                                markers.forEach((m) => {
+                                    m.destroy();
+                                });
+                                resetButton.disabled = false;
+                                resetButton.textContent = buttonText[1];
+                                $.ajax({
+                                    url: 'https://catalog.api.2gis.ru/carrouting/6.0.1/?key=52cb94e5-f021-4f45-93fb-a8f4e57cf048',
+                                    type: 'post',
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data: '{"points": [ { "x": ' + firstPoint[0] + ', "y": ' + firstPoint[1] + ' }, { "x": ' + secondPoint[0] + ', "y": ' + secondPoint[1] + ' } ] }',
+                                    success: function (response_internal) {
+                                        console.log(response_internal)
+                                        length = response_internal.result[0].total_distance;
+                                        $('#ToAddress').val(response.result.items[0].full_name);
+                                        $('#ToAddress').parent().find('span').empty();
+                                        $('#ToAddress').trigger('change');
+                                    },
+                                    error: function (response) {
+                                        console.log('oh shit')
+                                    }
+                                })
+                            }
+                        },
+                        error: function (response) {
+                            console.log('error with first');
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 </div>
 
@@ -80,4 +218,26 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        var length = null;
+        var weight = $('#Weight')
+        var addressFrom = $('#FromAddress')
+        var addressTo = $('#ToAddress')
+        var price = $('#Price')
+        price.val('')
+        weight.on('input', CalculatePrice)
+        addressFrom.on('change', CalculatePrice)
+        addressTo.on('change', CalculatePrice)
+        function CalculatePrice() {
+            if (weight.val() !== '' && addressFrom.val() !== '' && addressTo.val() !== '' && length !== null && parseFloat(weight.val().replace(',', '.')) == weight.val().replace(',', '.') && parseFloat(weight.val().replace(',', '.')) > 0) {
+                let p = ((((53 * 50 * length / 1000) / 100) + ((4 * 14400 * length / 1000) / 1000)) * 6 + parseFloat(weight.val().replace(',', '.'))).toFixed(2);
+                price.val(p)
+                price.trigger('change')
+            }
+            else {
+
+                price.val('');
+            }
+        }
+    </script>
 }

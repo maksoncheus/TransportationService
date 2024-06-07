@@ -23,5 +23,6 @@ namespace TransportationService.WEB.Data.Entities
         public virtual User Customer { get; set; }
         [DisplayName("Итоговая цена")]
         public double Price { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

@@ -1,15 +1,75 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TransportationService.WEB.Data.Entities;
+using TransportationService.WEB.Data;
+using Microsoft.EntityFrameworkCore;
+using TransportationService.WEB.Helpers;
 
 namespace TransportationService.WEB.Areas.Manage.Controllers
 {
     [Area("Manage")]
     public class OrderController : Controller
     {
-        [Authorize(Roles = "Administrator,Manager")]
-        public IActionResult Index()
+        private readonly ApplicationDbContext<User> _context;
+        private readonly UserManager<User> _userManager;
+        public OrderController(ApplicationDbContext<User> context, UserManager<User> userManager)
         {
-            return View();
+            _context = context;
+            _userManager = userManager;
+        }
+        //TODO : MAKE IT WORK
+        [Authorize(Roles = "Administrator,Manager")]
+        public async Task<IActionResult> Cargo(
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
+        {
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var orders = await _context.CargoOrders.ToListAsync();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                orders = orders.Where(o => o.Number.Contains(searchString) || o.Customer.PhoneNumber.Contains(searchString)).ToList();
+            }
+            int pageSize = 6;
+            return View(await PaginatedList<CargoOrder>.CreateAsync(orders, pageNumber ?? 1, pageSize));
+        }
+        [Authorize(Roles = "Administrator,Manager")]
+        public async Task<IActionResult> Transport(
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
+        {
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var orders = await _context.TransportOrders.ToListAsync();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                orders = orders.Where(o => o.Number.Contains(searchString) || o.Customer.PhoneNumber.Contains(searchString)).ToList();
+            }
+            int pageSize = 6;
+            return View(await PaginatedList<TransportOrder>.CreateAsync(orders, pageNumber ?? 1, pageSize));
         }
     }
 }

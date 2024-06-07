@@ -26,6 +26,7 @@ namespace TransportationService.WEB.Models
         [DisplayName("Наименование груза")]
         public Guid CargoId { get; set; }
         [DisplayName("Итоговая цена")]
-        public double Price { get; set; }
+        [Required(ErrorMessage = "Цена не указана")]
+        public string Price { get; set; }
     }
 }

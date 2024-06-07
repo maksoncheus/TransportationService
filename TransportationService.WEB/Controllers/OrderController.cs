@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using System.Globalization;
 using TransportationService.WEB.Data;
 using TransportationService.WEB.Data.Entities;
 using TransportationService.WEB.Data.Enums;
@@ -20,11 +21,20 @@ namespace TransportationService.WEB.Controllers
             _context = context;
             _userManager = userManager;
         }
+        public async Task<double> GetCargoPrice(Guid id)
+        {
+            Cargo? cargo = await _context.Cargos.FindAsync(id);
+            return cargo.Price;
+        }
+        public async Task<double> GetCargoQuantity(Guid id)
+        {
+            Cargo? cargo = await _context.Cargos.FindAsync(id);
+            return cargo.RemainQuantity;
+        }
         /// <summary>
         /// Страница оформления заказа на доставку определенного груза.
         /// </summary>
         /// <param name="cargoId">ID груза.</param>
-
         public async Task<IActionResult> Cargo(Guid? cargoId = null)
         {
             if (cargoId == null) { return View(new CargoOrderViewModel()); }
@@ -76,8 +86,9 @@ namespace TransportationService.WEB.Controllers
                     DeliveryMaxTime = model.DeliveryMaxTime,
                     Cargo = cargo,
                     Customer = user,
-                    Price = model.Price,
-                    Status = Status.Ordered
+                    Price = double.Parse(model.Price, CultureInfo.InvariantCulture),
+                    Status = Status.Ordered,
+                    TimeStamp = DateTime.Now
                 };
                 _context.CargoOrders.Add(order);
                 cargo.RemainQuantity -= weight;
@@ -147,8 +158,9 @@ namespace TransportationService.WEB.Controllers
                     DeliveryMinTime = model.DeliveryMinTime,
                     DeliveryMaxTime = model.DeliveryMaxTime,
                     Customer = user,
-                    Price = model.Price,
-                    Status = Status.Ordered
+                    Price = double.Parse(model.Price, CultureInfo.InvariantCulture),
+                    Status = Status.Ordered,
+                    TimeStamp = DateTime.Now
                 };
                 _context.TransportOrders.Add(order);
                 await _context.SaveChangesAsync();
@@ -178,10 +190,13 @@ namespace TransportationService.WEB.Controllers
                 return $"<div class=\"container p-2\">\r\n" +
                     $"\r\n<div class=\"row\">\r\n<article class=\"card bg-transparent\">\r\n" +
                     $"<div class=\"card-body bg-transparent\">\r\n<h6>{cargo.Number}</h6>\r\n<article class=\"card bg-transparent\">\r\n" +
-                    $"<div class=\"card-body row bg-transparent\">\r\n<div class=\"col\"> <strong>Груз: </strong> <br>{cargo.Cargo.Name}</div>\r\n" +
+                    $"<div class=\"card-body row bg-transparent\">\r\n<div class=\"col\"> <strong>Груз: </strong> <br>{cargo.Cargo.Name} | {cargo.Weight} т.</div>\r\n" +
                     $"</div>\r\n</article>\r\n<article class=\"card bg-transparent\">\r\n" +
                     $"<div class=\"card-body row bg-transparent\">\r\n" +
-                    $"<div class=\"col\"> <strong>Адрес:</strong> <br>{cargo.DeliveryAddress}</div>\r\n</div>\r\n</article>\r\n" +
+                    $"<div class=\"col\"> <strong>Адрес:</strong> <br>{cargo.DeliveryAddress}</div>" +
+                    $"<div class=\"col\"> <strong>Цена:</strong> <br>{cargo.Price}</div>" + 
+                    $"</div>\r\n" +
+                    $"</article>\r\n" +
                     $"<article class=\"card bg-transparent\">\r\n<div class=\"card-body row bg-transparent\">\r\n" +
                     $"<div class=\"col\"> <strong>Ожидаемое время получения:</strong>" +
                     $"<br>{cargo.DeliveryDate} {cargo.DeliveryMinTime}-{cargo.DeliveryMaxTime}</div>" +
@@ -207,7 +222,7 @@ namespace TransportationService.WEB.Controllers
                     $"<h6>{transport.Number}</h6>" +
                     $"<article class=\"card bg-transparent\">\r\n<div class=\"card-body row bg-transparent\">" +
                     $"\r\n<div class=\"col\"><strong>Параметры:</strong> <br>{transport.Length}x{transport.Width}" +
-                    $"x{transport.Height} м {transport.Weight} т</div>\r\n</div>\r\n</article>" +
+                    $"x{transport.Height} м {transport.Weight} кг</div>\r\n</div>\r\n</article>" +
                     $"\r\n<article class=\"card bg-transparent\">\r\n" +
                     $"<div class=\"card-body row bg-transparent\">\r\n" +
                     $"<div class=\"col\"> <strong>Откуда:</strong> <br>{transport.FromAddress}</div>\r\n" +
