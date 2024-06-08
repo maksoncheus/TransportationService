@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         @foreach (TransportOrder order in Model.OrderByDescending(o => o.TimeStamp))
         {
-            <div class="col-md-3 mx-1 my-1 bg-secondary bg-opacity-10 user" data-id="@order.Number">
+            <div class="col-md-3 mx-1 my-1 bg-secondary bg-opacity-10 user border-1 border-top border-bottom border-start border-end border-secondary" data-id="@order.Number">
                 @{
                     string status = order.Status switch
                     {
@@ -30,67 +30,125 @@
                         _ => "Не удалось получить статус"
                     };
                 }
-                    <div class="row">
-                        <article class="card bg-transparent">
-                            <div class="card-body bg-transparent">
-                                <h6>Номер заказа: @order.Number</h6>
+                <div class="row">
+                    <article class="card bg-transparent">
+                        <div class="card-body bg-transparent">
+                            <h6>Номер заказа: @order.Number</h6>
+                            <article class="card bg-transparent">
+                                <div class="card-body row bg-transparent">
+                                    <div class="col"> <strong>Параметры:</strong> <br>@(order.Length)x@(order.Width)x@(order.Height) м @order.Weight кг</div>
+                                </div>
+                            </article>
+                            <article class="card bg-transparent">
+                                <div class="card-body row bg-transparent">
+                                    <div class="col"> <strong>Откуда:</strong> <br>@order.FromAddress</div>
+                                </div>
+                            </article>
+                            <article class="card bg-transparent">
+                                <div class="card-body row bg-transparent">
+                                    <div class="col"> <strong>Куда:</strong> <br>@order.ToAddress</div>
+                                </div>
+                            </article>
+                            <article class="card bg-transparent">
+                                <div class="card-body row bg-transparent">
+                                    <div class="col"> <strong>Цена:</strong> <br>@order.Price</div>
+                                    <div class="col"> <strong>Номер заказчика:</strong> <br>@order.Customer.PhoneNumber</div>
+                                </div>
+                            </article>
+                            <article class="card bg-transparent">
+                                <div class="card-body row bg-transparent">
+                                    <div class="col"> <strong>Ожидаемое время получения:</strong> <br>@order.DeliveryDate @(order.DeliveryMinTime)-@(order.DeliveryMaxTime)</div>
+                                    <div class="col row row-cols-1">
+                                        <div class="col"><strong>Статус:</strong> <br> @status</div>
+                                        @{
+                                            string buttonClass = string.Empty;
+                                            string buttonContent = string.Empty;
+                                            switch (order.Status)
+                                            {
+                                                case (Status)0:
+                                                    {
+                                                        buttonClass = "closed";
+                                                        buttonContent = "";
+                                                        break;
+                                                    }
+                                                case (Status)1:
+                                                    {
+                                                        buttonClass = "closed";
+                                                        buttonContent = "";
+                                                        break;
+                                                    }
+                                                case (Status)2:
+                                                    {
+                                                        buttonClass = "gotten";
+                                                        buttonContent = "Одобрить";
+                                                        break;
+                                                    }
+                                                case (Status)3:
+                                                    {
+                                                        buttonClass = "approved";
+                                                        buttonContent = "\"В работе\"";
+                                                        break;
+                                                    }
+                                                case (Status)4:
+                                                    {
+                                                        buttonClass = "work";
+                                                        buttonContent = "Завершить";
+                                                        break;
+                                                    }
+                                                case (Status)5:
+                                                    {
+                                                        buttonClass = "completed";
+                                                        buttonContent = "";
+                                                        break;
+                                                    }
+                                            };
+                                        }
+                                        @if ((int)order.Status == 2 || (int)order.Status == 3 || (int)order.Status == 4)
+                                        {
+                                            <div class="col"><button class="btn main_accent @buttonClass">@buttonContent</button></div>
+                                        }
+                                    </div>
+                                </div>
+                            </article>
+                            @if ((int)order.Status == 2 || (int)order.Status == 3)
+                            {
                                 <article class="card bg-transparent">
                                     <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Параметры:</strong> <br>@(order.Length)x@(order.Width)x@(order.Height) м @order.Weight кг</div>
+                                        <button class="btn btn-danger delete">Отклонить заказ</button>
                                     </div>
                                 </article>
-                                <article class="card bg-transparent">
-                                    <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Откуда:</strong> <br>@order.FromAddress</div>
-                                    </div>
-                                </article>
-                                <article class="card bg-transparent">
-                                    <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Куда:</strong> <br>@order.ToAddress</div>
-                                    </div>
-                                </article>
-                                <article class="card bg-transparent">
-                                    <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Цена:</strong> <br>@order.Price</div>
-                                        <div class="col"> <strong>Номер заказчика:</strong> <br>@order.Customer.PhoneNumber</div>
-                                    </div>
-                                </article>
-                                <article class="card bg-transparent">
-                                    <div class="card-body row bg-transparent">
-                                        <div class="col"> <strong>Ожидаемое время получения:</strong> <br>@order.DeliveryDate @(order.DeliveryMinTime)-@(order.DeliveryMaxTime)</div>
-                                        <div class="col"> <strong>Статус:</strong> <br> @status </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </article>
-                    </div>
+                            }
+                        </div>
+                    </article>
                 </div>
-                }
-        </div>
-        <div class="row justify-content-center mt-3">
-                @{
-                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-                }
-
-            <a asp-action="Index"
-               asp-route-pageNumber="@(Model.PageIndex - 1)"
-               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               class="btn secondary_accent col-md-1 mx-1 @prevDisabled">
-                Назад
-            </a>
-            <a asp-action="Index"
-               asp-route-pageNumber="@(Model.PageIndex + 1)"
-               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               class="btn secondary_accent col-md-1 mx-1 @nextDisabled">
-                Далее
-            </a>
-        </div>
+            </div>
+        }
     </div>
+    <div class="row justify-content-center mt-3">
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn secondary_accent col-md-1 mx-1 @prevDisabled">
+            Назад
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn secondary_accent col-md-1 mx-1 @nextDisabled">
+            Далее
+        </a>
+    </div>
+</div>
 
 
-            @section Scripts {
-            @{
-                    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-                }
-            }
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/order.js"></script>
+}

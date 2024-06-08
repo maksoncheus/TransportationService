@@ -527,3 +527,6 @@ ul.row, ul.row-sm {
 .modal-content{
     background-color: rgb(var(--bg-color)) !important;
 }
+.border-secondary{
+    border-color: rgb(var(--color-main)) !important;
+}

@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using TransportationService.WEB.Configuration;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace TransportationService.WEB.Services
 {
@@ -11,7 +12,6 @@ namespace TransportationService.WEB.Services
     {
         private readonly ILogger<MailService> _logger;
         private readonly SMTPSettings _smtpSettings;
-
         public MailService(ILogger<MailService> logger, SMTPSettings smtpSettings)
         {
             _logger = logger;
@@ -39,7 +39,7 @@ namespace TransportationService.WEB.Services
                     SendMessage(mm);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Log(LogLevel.Error, ex.Message);
             }
@@ -62,6 +62,30 @@ namespace TransportationService.WEB.Services
                         $"Для сброса пройдите по ссылке: {link}"
                         + Environment.NewLine +
                         "Если вы не запрашивали сброс пароля, проигнорируйте данное сообщение";
+                    mm.IsBodyHtml = false;
+                    SendMessage(mm);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, ex.Message);
+            }
+        }
+        public void SendOrderMessage(string linkToHome, string orderNumber, string emailTo)
+        {
+            try
+            {
+                using (MailMessage mm = new MailMessage(
+                    new MailAddress(_smtpSettings.Email, "TransportationService"), new MailAddress(emailTo)))
+                {
+                    mm.Subject = "Ваш заказ в сервисе TransportationService";
+                    mm.Body = "Спасибо, что воспользовались нашим сервисом грузоперевозок!"
+                        + Environment.NewLine +
+                        $"Уникальный номер вашего заказа: {orderNumber}"
+                        + Environment.NewLine +
+                        "Вы можете посмотреть статус и подробную информацию о вашем заказе в личном профиле на сайте либо воспользовавшись специальной формой на главной странице."
+                        + Environment.NewLine +
+                        $"{linkToHome}";
                     mm.IsBodyHtml = false;
                     SendMessage(mm);
                 }

@@ -6,6 +6,7 @@ using TransportationService.WEB.Data;
 using TransportationService.WEB.Data.Entities;
 using TransportationService.WEB.Data.Enums;
 using TransportationService.WEB.Models;
+using TransportationService.WEB.Services;
 
 namespace TransportationService.WEB.Controllers
 {
@@ -16,10 +17,12 @@ namespace TransportationService.WEB.Controllers
     {
         private readonly ApplicationDbContext<User> _context;
         private readonly UserManager<User> _userManager;
-        public OrderController(ApplicationDbContext<User> context, UserManager<User> userManager)
+        private readonly MailService _mailService;
+        public OrderController(ApplicationDbContext<User> context, UserManager<User> userManager, MailService mailService)
         {
             _context = context;
             _userManager = userManager;
+            _mailService = mailService;
         }
         public async Task<double> GetCargoPrice(Guid id)
         {
@@ -94,6 +97,7 @@ namespace TransportationService.WEB.Controllers
                 cargo.RemainQuantity -= weight;
                 _context.Entry(cargo).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 await _context.SaveChangesAsync();
+                _mailService.SendOrderMessage(Url.Action("Index", "Home", new { area=""}, protocol: HttpContext.Request.Scheme),order.Number, order.Customer.Email);
                 return RedirectToAction("Message", "Home", new { area = "", msg = $"<h3>Номер вашего заказа: <strong>{order.Number}</strong>. Вы можете отследить его выполнение на вкладке \"Мои заказы\"</h3>" });
             }
             catch (Exception ex)
@@ -164,6 +168,7 @@ namespace TransportationService.WEB.Controllers
                 };
                 _context.TransportOrders.Add(order);
                 await _context.SaveChangesAsync();
+                _mailService.SendOrderMessage(Url.Action("Index", "Home", new { area=""}, protocol: HttpContext.Request.Scheme),order.Number, order.Customer.Email);
                 return RedirectToAction("Message", "Home", new { area = "", msg = $"<h3>Номер вашего заказа: <strong>{order.Number}</strong>. Вы можете отследить его выполнение на вкладке \"Мои заказы\"</h3>" });
             }
             catch (Exception ex)

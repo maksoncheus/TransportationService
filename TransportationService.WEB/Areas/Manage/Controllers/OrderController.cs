@@ -5,6 +5,7 @@ using TransportationService.WEB.Data.Entities;
 using TransportationService.WEB.Data;
 using Microsoft.EntityFrameworkCore;
 using TransportationService.WEB.Helpers;
+using TransportationService.WEB.Data.Enums;
 
 namespace TransportationService.WEB.Areas.Manage.Controllers
 {
@@ -70,6 +71,28 @@ namespace TransportationService.WEB.Areas.Manage.Controllers
             }
             int pageSize = 6;
             return View(await PaginatedList<TransportOrder>.CreateAsync(orders, pageNumber ?? 1, pageSize));
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus(string? id, int newStatus)
+        {
+            if (id == null) return BadRequest();
+            CargoOrder? cargo = await _context.CargoOrders.FindAsync(id);
+            if (cargo != null)
+            {
+                cargo.Status = (Status)newStatus;
+                _context.Entry(cargo).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            TransportOrder? transport = await _context.TransportOrders.FindAsync(id);
+            if (transport != null)
+            {
+                transport.Status = (Status)newStatus;
+                _context.Entry(transport).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
