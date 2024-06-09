@@ -454,7 +454,9 @@ body {
         .track .step.active:before {
             background-color: rgb(var(--color-main));
         }
-
+        .track .step.dismissed:before {
+            background-color: rgb(var(--error-color));
+        }
         .track .step::before {
             height: 7px;
             position: absolute;
@@ -468,7 +470,10 @@ body {
             background-color: rgb(var(--color-main));
             color: #fff
         }
-
+        .track .step.dismissed .icon {
+            background-color: rgb(var(--error-color));
+            color: #fff
+        }
     .track .icon {
         display: inline-block;
         width: 40px;
@@ -479,7 +484,7 @@ body {
         background: #ddd
     }
 
-    .track .step.active .text {
+    .track .step .text {
         font-weight: 400;
         color: rgb(var(--color-second))
     }

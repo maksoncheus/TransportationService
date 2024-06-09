@@ -4,6 +4,11 @@
             context = _this.closest('.user')
         changeOrderStatus(context, 0)
     });
+    $(document).find('.deleteUser').on('click', function (e) {
+        let _this = $(this),
+            context = _this.closest('.user')
+        changeOrderStatus(context, 1)
+    });
     $(document).find('.gotten').on('click', function (e) {
         let _this = $(this),
             context = _this.closest('.user')

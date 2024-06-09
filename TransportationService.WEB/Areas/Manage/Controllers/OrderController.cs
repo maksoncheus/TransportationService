@@ -72,6 +72,7 @@ namespace TransportationService.WEB.Areas.Manage.Controllers
             int pageSize = 6;
             return View(await PaginatedList<TransportOrder>.CreateAsync(orders, pageNumber ?? 1, pageSize));
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangeStatus(string? id, int newStatus)
         {
@@ -79,6 +80,22 @@ namespace TransportationService.WEB.Areas.Manage.Controllers
             CargoOrder? cargo = await _context.CargoOrders.FindAsync(id);
             if (cargo != null)
             {
+                if (newStatus == 0 || newStatus == 1)
+                    if(cargo.Status < (Status)2 || cargo.Status > (Status)3)
+                        return BadRequest();
+
+                if(newStatus == 3)
+                    if (cargo.Status != (Status)2)
+                        return BadRequest();
+
+                if (newStatus == 4)
+                    if (cargo.Status != (Status)3)
+                        return BadRequest();
+
+                if (newStatus == 5)
+                    if (cargo.Status != (Status)4)
+                        return BadRequest();
+
                 cargo.Status = (Status)newStatus;
                 _context.Entry(cargo).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -87,6 +104,22 @@ namespace TransportationService.WEB.Areas.Manage.Controllers
             TransportOrder? transport = await _context.TransportOrders.FindAsync(id);
             if (transport != null)
             {
+                if (newStatus == 0 || newStatus == 1)
+                    if (transport.Status < (Status)2 || transport.Status > (Status)3)
+                        return BadRequest();
+
+                if (newStatus == 3)
+                    if (transport.Status != (Status)2)
+                        return BadRequest();
+
+                if (newStatus == 4)
+                    if (transport.Status != (Status)3)
+                        return BadRequest();
+
+                if (newStatus == 5)
+                    if (transport.Status != (Status)4)
+                        return BadRequest();
+
                 transport.Status = (Status)newStatus;
                 _context.Entry(transport).State = EntityState.Modified;
                 await _context.SaveChangesAsync();

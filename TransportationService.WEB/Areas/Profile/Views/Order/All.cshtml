@@ -48,7 +48,7 @@ else
                             (Status)5 => "Доставлен",
                             _ => "Не удалось получить статус"
                         };
-                        <div class="row">
+                        <div class="row user" data-id="@order.Number">
                             <article class="card bg-transparent">
                                 <div class="card-body bg-transparent">
                                     <h6>Номер заказа: @order.Number</h6>
@@ -78,6 +78,14 @@ else
                                             <div class="col"> <strong>Статус:</strong> <br> @status </div>
                                         </div>
                                     </article>
+                                    @if ((int)order.Status == 2 || (int)order.Status == 3)
+                                    {
+                                        <article class="card bg-transparent">
+                                            <div class="card-body row bg-transparent">
+                                                <button class="btn btn-danger deleteUser">Отклонить заказ</button>
+                                            </div>
+                                        </article>
+                                    }
                                     <div class="track">
                                         @{
                                             int i = 0;
@@ -109,7 +117,7 @@ else
                             (Status)5 => "Доставлен",
                             _ => "Не удалось получить статус"
                         };
-                        <div class="row">
+                        <div class="row user" data-id="@order.Number">
                             <article class="card bg-transparent">
                                 <div class="card-body bg-transparent">
                                     <h6>Номер заказа: @order.Number</h6>
@@ -130,14 +138,27 @@ else
                                             <div class="col"> <strong>Статус:</strong> <br> @status </div>
                                         </div>
                                     </article>
+                                    @if ((int)order.Status == 2 || (int)order.Status == 3)
+                                    {
+                                        <article class="card bg-transparent">
+                                            <div class="card-body row bg-transparent">
+                                                <button class="btn btn-danger deleteUser">Отклонить заказ</button>
+                                            </div>
+                                        </article>
+                                    }
                                     <div class="track">
-                                        @{
+                                        @if (order.Status > (Status)1)
+                                        {
                                             int i = 0;
+                                            <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Получен организацией</span> </div>
+                                            <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">Одобрен организацией</span> </div>
+                                            <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В пути</span> </div>
+                                            <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Доставлен</span> </div>
                                         }
-                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Получен организацией</span> </div>
-                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">Одобрен организацией</span> </div>
-                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В пути</span> </div>
-                                        <div class="step@((int)order.Status - 2 >= i++ ? " active" : "")"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Доставлен</span> </div>
+                                        else
+                                        {
+                                            <div class="step dismissed"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">@status</span> </div>
+                                        }
                                     </div>
                                 </div>
                             </article>
@@ -152,3 +173,10 @@ else
     <div class="col-md-4">
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/order.js"></script>
+}
